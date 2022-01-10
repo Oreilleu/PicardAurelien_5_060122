@@ -7,9 +7,11 @@ fetch('http://localhost:3000/api/products')
 .then(res => res.json())
 .then(data => {
     console.table(data)
+    let url = 1;
     for(let i = 0; i < data.length; i++) {
         a = document.createElement('a');
-        a.setAttribute('href', './product.html?id=42')
+        a.setAttribute('href', newUrl('?=' + url++))
+        console.log(a)
         items.appendChild(a);
 
         article = document.createElement('article');
@@ -32,8 +34,11 @@ fetch('http://localhost:3000/api/products')
     }
 });
 
-let params = new URL('./product.html?id=42')
-console.log(params)
+let newUrl = function (inser) {
+    let insert = inser
+    let params = new URL('http://127.0.0.1:36925/front/html/index.html');
+    return params + insert;
+}
 
 
 /* 
