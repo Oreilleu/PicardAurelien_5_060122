@@ -1,10 +1,12 @@
 // Récupère les données de l'API et les ajoutent dans l'index.html
 
 let items = document.getElementById('items')
+let a;
 
 fetch('http://localhost:3000/api/products')
 .then(res => res.json())
 .then(data => {
+    console.table(data)
     for(let i = 0; i < data.length; i++) {
         a = document.createElement('a');
         a.setAttribute('href', './product.html?id=42')
@@ -14,9 +16,9 @@ fetch('http://localhost:3000/api/products')
         a.appendChild(article);
 
         img = document.createElement('img');
-        img.setAttribute('src', '');
+        img.setAttribute('alt', data[i].altTxt);
+        img.setAttribute('src', data[i].imageUrl);
         article.appendChild(img);
-        img.src = data[i].imageUrl;
 
         h3 = document.createElement('h3');
         h3.classList.add('productName');
@@ -29,3 +31,11 @@ fetch('http://localhost:3000/api/products')
         p.innerText = data[i].description;
     }
 });
+
+let params = new URL('./product.html?id=42')
+console.log(params)
+
+
+/* 
+Faire lien entre les produits de la page d'acceuil et la page produit (“URLSearchParams”)
+*/
