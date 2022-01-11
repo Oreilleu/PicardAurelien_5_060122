@@ -11,17 +11,13 @@
 
 
 let params = new URLSearchParams(window.location.search)
-let colors = document.getElementById('colors')
 let itemImage = document.querySelector('div.item__img')
 
 fetch('http://localhost:3000/api/products')
     .then(res => res.json())
     .then(data => {
-        console.table(data)
-        // console.log(data[1]._id)
-        for (let i = 0; i < data.length; i++) {
+        for(let i = 0; i < data.length; i++) {
             if(params.get('id') == data[i]._id){
-                console.log(data[i]._id)
                 let createImg = document.createElement('img')
                 itemImage.appendChild(createImg).setAttribute('img', '')
                 createImg.src = data[i].imageUrl
@@ -37,39 +33,26 @@ fetch('http://localhost:3000/api/products')
                 document
                     .getElementById('description')
                     .innerText = data[i].description
-                break
             }
         }
-        
-        
     })
 
-    /* 
-        Je veux récupérer les tableaux colors de ma data
+// Récup 1 canap par canap id dans requete
 
-        Je veux les afficher dans mes option du select
-        */
-        
-        // AFFICHE 8X BLUE DONC PREMIERE VALEUR DU TABLEAU COLORS 0
-        // for(let i = 0; i <  data.length; i++){
-        //     let recupColors = data[0].colors[0]
+let color = document.getElementById('colors')
 
-        //     let createOption = document.createElement('option')
-        //     createOption.innerText = recupColors
-        //     colors.appendChild(createOption)
-        // }
-        
-        // AFFICHE RIEN
-        // for (let i = 0; i <; i++) {
-        //     let createOption = document.createElement('option')
-        //     console.log(i)
-        //     colors.appendChild(createOption)
-        // }
+function colorOption () {
+    
+}
 
-        // let optionOne = document.createElement('option')
-        // optionOne.innerText = "vert"
-        // colors.appendChild(optionOne).setAttribute('value', 'vert')
-
-        // let optionTwo = document.createElement('option') 
-        // optionTwo.innerText = "blanc"
-        // colors.appendChild(optionTwo).setAttribute('value', 'blanc')
+fetch('http://localhost:3000/api/products/107fb5b75607497b96722bda5b504926')
+    .then(res => res.json())
+    .then(dataa => {
+        console.table(dataa)
+        for(let j = 0; j < dataa.colors.length; j++){
+            let createOption = document.createElement('option')
+            createOption.setAttribute('value', dataa.colors[j])
+            createOption.innerText = dataa.colors[j]
+            color.appendChild(createOption)
+        }
+    })
