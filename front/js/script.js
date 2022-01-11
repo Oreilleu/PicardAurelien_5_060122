@@ -6,12 +6,11 @@ let a;
 fetch('http://localhost:3000/api/products')
 .then(res => res.json())
 .then(data => {
-    console.table(data)
+    // console.table(data)
     let url = 1;
     for(let i = 0; i < data.length; i++) {
         a = document.createElement('a');
-        a.setAttribute('href', newUrl('?=' + url++))
-        console.log(a)
+        a.setAttribute('href', new URL('http://127.0.0.1:42527/front/html/product.html?id=' + data[i]._id))
         items.appendChild(a);
 
         article = document.createElement('article');
@@ -34,13 +33,7 @@ fetch('http://localhost:3000/api/products')
     }
 });
 
-let newUrl = function (inser) {
-    let insert = inser
-    let params = new URL('http://127.0.0.1:36925/front/html/index.html');
-    return params + insert;
-}
-
-
 /* 
-Faire lien entre les produits de la page d'acceuil et la page produit (“URLSearchParams”)
+Voir avec Yazid si bonne méthod utilisé pour lié les item à leur page produit
+Manière dynamique ? oui grace a data.length ?   
 */
