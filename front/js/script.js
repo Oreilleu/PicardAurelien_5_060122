@@ -32,8 +32,3 @@ fetch('http://localhost:3000/api/products')
         p.innerText = data[i].description;
     }
 });
-
-/* 
-Voir avec Yazid si bonne méthod utilisé pour lié les item à leur page produit
-Manière dynamique ? oui grace a data.length ?   
-*/
