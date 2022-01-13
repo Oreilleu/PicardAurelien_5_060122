@@ -3,6 +3,7 @@
  * Créer les items 
  * Met les data dans les items si la page correspond a l'id de l'item
 */
+
 let idItem, colorItem, nbItem;
 let dataCanap = [];
 let params = new URLSearchParams(window.location.search);
@@ -47,7 +48,7 @@ fetch('http://localhost:3000/api/products')
             if(params.get('id') == data[j]._id){
                 // console.log(data[j]._id)
                 idItem = data[j]._id;
-                dataCanap.push(idItem)
+                
                 fetch('http://localhost:3000/api/products/' + data[j]._id)
                 .then(res => res.json())
                 .then(data => {
@@ -74,6 +75,22 @@ fetch('http://localhost:3000/api/products')
 */
 color.addEventListener('change', function(e) {
     colorItem = e.target.value;
-})
+});
 
-console.log(colorItem)
+let quantityCanap = document.getElementById('quantity');
+
+quantityCanap.addEventListener('change', function(e) {
+    nbItem = e.target.value;
+});
+
+let button = document.getElementById('addToCart');
+
+button.addEventListener('click', function(e) {
+    dataCanap.push(idItem)
+    dataCanap.push(colorItem)
+    dataCanap.push(nbItem)
+    console.log(dataCanap)
+    if(button.click){
+        dataCanap = []
+    }
+});
