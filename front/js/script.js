@@ -3,6 +3,7 @@
 */
 
 // Voir avec Yazid pour le port qui change a chaque deconnection
+// Fonction à découper ?
 
 let items = document.getElementById('items');
 let a;
@@ -12,7 +13,7 @@ fetch('http://localhost:3000/api/products')
 .then(data => {
     for(let i = 0; i < data.length; i++) {
         a = document.createElement('a');
-        a.setAttribute('href', new URL('http://127.0.0.1:40175/front/html/product.html?id=' + data[i]._id));
+        a.setAttribute('href', new URL('http://127.0.0.1:41483/front/html/product.html?id=' + data[i]._id));
         items.appendChild(a);
 
         article = document.createElement('article');
