@@ -4,8 +4,10 @@
  * Met les data dans les items si la page correspond a l'id de l'item
 */
 
-// let idItem, colorItem, nbItem;
-// let dataCanap = [];
+let idItem, colorItem, nbItem;
+let cart = [];
+let arrayCart = []
+
 let params = new URLSearchParams(window.location.search);
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
@@ -20,19 +22,19 @@ function AddItemWithDataToProducts() {
                 itemImage.appendChild(createImg).setAttribute('img', '');
                 createImg.setAttribute('alt', data[i].altTxt)
                 createImg.src = data[i].imageUrl;
-                localStorage.setItem('img', data[i].imageUrl)
-                localStorage.setItem('alt', data[i].altTxt)
+                // localStorage.setItem('img', data[i].imageUrl)
+                // localStorage.setItem('alt', data[i].altTxt)
 
 
                 document
                     .getElementById('title')
                     .innerText = data[i].name;
-                    localStorage.setItem('title', data[i].name)
+                    // localStorage.setItem('title', data[i].name)
 
                 document
                     .getElementById('price')
                     .innerText = data[i].price;
-                    localStorage.setItem('price', data[i].price)
+                    // localStorage.setItem('price', data[i].price)
 
                 document
                     .getElementById('description')
@@ -53,8 +55,8 @@ function AddOptionToSelectWithData() {
     .then(data => {
         for(let j = 0; j < data.length; j++) {
             if(params.get('id') == data[j]._id){
-                // idItem = data[j]._id;
-                localStorage.setItem('id', data[j]._id)
+                idItem = data[j]._id;
+                // localStorage.setItem('id', data[j]._id)
                 fetch('http://localhost:3000/api/products/' + data[j]._id)
                 .then(res => res.json())
                 .then(data => {
@@ -77,31 +79,61 @@ function AddOptionToSelectWithData() {
  * Faire une validation des données saisies
 */
 
-function arrayAddCart() {
+function getValue() {
     color.addEventListener('change', function(e) {
-        // colorItem = e.target.value;
-        localStorage.setItem('color', e.target.value)
+        // localStorage.setItem('color', e.target.value)
+        colorItem = e.target.value
     });
     
     let quantityCanap = document.getElementById('quantity');
     quantityCanap.addEventListener('change', function(e) {
-        // nbItem = e.target.value;
-        localStorage.setItem('number', e.target.value)
+        // localStorage.setItem('number', e.target.value)
+        nbItem = e.target.value
     });
     
     let button = document.getElementById('addToCart');
     button.addEventListener('click', function(e) {
-        dataCanap.push(idItem)
-        dataCanap.push(colorItem)
-        dataCanap.push(nbItem)
-        console.log(dataCanap)
-        if(button.click){
-            dataCanap = []
+        cart.push(idItem)
+        cart.push(colorItem)
+        cart.push(nbItem)
+        arrayCart.push(cart)
+        localStorage.setItem('arrayCart', JSON.stringify(arrayCart));
+        console.log(arrayCart)
+
+        for(let i = 0; i < arrayCart.length; i++) {
+            if(cart[i] = arrayCart){
+                console.log(true)
+            } else {
+                console.log(false)
+            }
         }
+
+        if(button.click) {
+            cart = []
+        }
+        return arrayCart;
     });
-    return dataCanap
 }
+
+console.log(cart)
+
+
+
+// for(let i = 0; i < getValue().length)
+// for(let i = 0; i < arrayCart.length; i++) {
+//     if(cart[i] = arrayCart){
+        
+
+
+//     } else {
+//         console.log(false)
+//     }
+// }
+console.log(arrayCart)
+
+
 
 AddItemWithDataToProducts()
 AddOptionToSelectWithData()
-arrayAddCart()
+getValue()
+
