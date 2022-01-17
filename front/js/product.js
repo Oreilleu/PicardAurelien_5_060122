@@ -5,9 +5,7 @@
 */
 
 let idItem, colorItem, nbItem;
-let cart = [];
-let arrayCart = []
-
+let cart = {}
 let params = new URLSearchParams(window.location.search);
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
@@ -22,19 +20,14 @@ function AddItemWithDataToProducts() {
                 itemImage.appendChild(createImg).setAttribute('img', '');
                 createImg.setAttribute('alt', data[i].altTxt)
                 createImg.src = data[i].imageUrl;
-                // localStorage.setItem('img', data[i].imageUrl)
-                // localStorage.setItem('alt', data[i].altTxt)
-
 
                 document
                     .getElementById('title')
                     .innerText = data[i].name;
-                    // localStorage.setItem('title', data[i].name)
 
                 document
                     .getElementById('price')
                     .innerText = data[i].price;
-                    // localStorage.setItem('price', data[i].price)
 
                 document
                     .getElementById('description')
@@ -49,14 +42,13 @@ function AddItemWithDataToProducts() {
  *
 */
 
-function AddOptionToSelectWithData() {
+function AddOptionSelect() {
     fetch('http://localhost:3000/api/products')
     .then(res => res.json())
     .then(data => {
         for(let j = 0; j < data.length; j++) {
             if(params.get('id') == data[j]._id){
                 idItem = data[j]._id;
-                // localStorage.setItem('id', data[j]._id)
                 fetch('http://localhost:3000/api/products/' + data[j]._id)
                 .then(res => res.json())
                 .then(data => {
@@ -79,61 +71,93 @@ function AddOptionToSelectWithData() {
  * Faire une validation des données saisies
 */
 
-function getValue() {
+
+function ClickOnCart() {
     color.addEventListener('change', function(e) {
-        // localStorage.setItem('color', e.target.value)
         colorItem = e.target.value
     });
     
     let quantityCanap = document.getElementById('quantity');
     quantityCanap.addEventListener('change', function(e) {
-        // localStorage.setItem('number', e.target.value)
         nbItem = e.target.value
     });
     
     let button = document.getElementById('addToCart');
-    button.addEventListener('click', function(e) {
-        cart.push(idItem)
-        cart.push(colorItem)
-        cart.push(nbItem)
-        arrayCart.push(cart)
-        localStorage.setItem('arrayCart', JSON.stringify(arrayCart));
-        console.log(arrayCart)
-
-        for(let i = 0; i < arrayCart.length; i++) {
-            if(cart[i] = arrayCart){
-                console.log(true)
-            } else {
-                console.log(false)
-            }
+    button.addEventListener('click', function() {
+        let cart = {
+            id: idItem,
+            color: colorItem,
+            quantity: nbItem
         }
-
-        if(button.click) {
-            cart = []
-        }
-        return arrayCart;
+        console.log(cart)
+        return addCart(cart)
     });
 }
 
-console.log(cart)
+function saveCart(basket) {
+    localStorage.setItem('Cart', JSON.stringify(basket));
+}
+
+function getCart() {
+    let basket = localStorage.getItem('Cart');
+    if (basket == null) {
+        return [];
+    } else {
+        return JSON.parse(basket);
+    }
+}
+
+function addCart(product) {
+    let basket = getCart();
+    let foundProduct = basket.find(p => p.id == product.id && p.color == product.color);
+    console.log(foundProduct)
+        if(foundProduct != undefined) {
+            if(product.quantity == null) {
+                product.quantity = 0;
+            }
+            foundProduct.quantity = parseInt(foundProduct.quantity) + parseInt(product.quantity)
+            
+        } else {
+            product.quantity
+            basket.push(product);
+        }
 
 
-
-// for(let i = 0; i < getValue().length)
-// for(let i = 0; i < arrayCart.length; i++) {
-//     if(cart[i] = arrayCart){
-        
-
-
-//     } else {
-//         console.log(false)
-//     }
-// }
-console.log(arrayCart)
-
-
+    saveCart(basket);
+}
 
 AddItemWithDataToProducts()
-AddOptionToSelectWithData()
-getValue()
+AddOptionSelect()
+ClickOnCart()
+
+// Utilisation d'object obligatoire ?
+// Voir avec yazid si il y avait possibilité de faire comme si dessous donc retourner a chaque clique un tableau unique
+
+// for(let c = 0; c < arrayCart.length; c++){
+//     if (compteur[arrayCart[c]] === undefined) {
+//         compteur.push(cart)
+//         cart = []
+//         console.log(compteur)
+//         console.log('je push cart')
+     
+//     } 
+//     else if (cart[0] == compteur[c][0] && cart[1] == compteur[c][1]){
+//         // parseInt(cart[2])++
+//         console.log(compteur)
+//         console.log('je ne push pas cart')
+//         cart = []
+            
+//     }
+// }
+        /**
+         * Lorsqu'un je clique sur AJouter au panier on ajoute le produit au panier OK
+         * SI le produit n'est pas présent dans le panier
+         *      Ajoute l'élément dans le panier
+         * SINON SI le produit est présent (id et couleur identique)
+         *      J'incrémente la quantité du produit correspondant 
+        */
+// localStorage.setItem('arrayCart', JSON.stringify(arrayCart));
+
+
+
 
