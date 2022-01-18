@@ -4,8 +4,8 @@
  * Met les data dans les items si la page correspond a l'id de l'item
 */
 
-let idItem, colorItem, nbItem;
-let cart = {}
+let idItem, colorItem, nbItem, imgItem, nameItem, priceItem, altItem;
+let cart = {};
 let params = new URLSearchParams(window.location.search);
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
@@ -20,14 +20,18 @@ function AddItemWithDataToProducts() {
                 itemImage.appendChild(createImg).setAttribute('img', '');
                 createImg.setAttribute('alt', data[i].altTxt)
                 createImg.src = data[i].imageUrl;
+                imgItem = data[i].imageUrl;
+                altItem = data[i].altTxt;
 
                 document
                     .getElementById('title')
                     .innerText = data[i].name;
+                    nameItem = data[i].name;
 
                 document
                     .getElementById('price')
                     .innerText = data[i].price;
+                    priceItem = data[i].price;
 
                 document
                     .getElementById('description')
@@ -87,9 +91,13 @@ function ClickOnCart() {
         let cart = {
             id: idItem,
             color: colorItem,
-            quantity: nbItem
+            quantity: nbItem,
+            img: imgItem,
+            name: nameItem,
+            price: priceItem,
+            alt: altItem
         }
-        console.log(cart)
+        // console.log(cart)
         return addCart(cart)
     });
 }
@@ -110,7 +118,7 @@ function getCart() {
 function addCart(product) {
     let basket = getCart();
     let foundProduct = basket.find(p => p.id == product.id && p.color == product.color);
-    console.log(foundProduct)
+    // console.log(foundProduct)
         if(foundProduct != undefined) {
             if(product.quantity == null) {
                 product.quantity = 0;

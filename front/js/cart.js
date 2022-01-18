@@ -1,13 +1,11 @@
-let getSection = document.getElementById('cart__items');
-
-function getCart() {
+function getCartOnCartPage() {
     let cart = localStorage.getItem('Cart');
-    cart
-    for(let i = 0; i < cart.length; i++){
-        console.log(i)
+    if (cart == null) {
+        return [];
+    } else {
+        return JSON.parse(cart);
     }
 }
-
 
 function createDiv () {
     return document.createElement('div');
@@ -17,11 +15,14 @@ function createParagraph () {
     return document.createElement('p');
 }
 
-function createArticleForSection() {
+
+function createArticleForSection(id, color, quantity, image, name, price, alt) {
+    let getSection = document.getElementById('cart__items');
+
     let article =  document.createElement('article');
     article.setAttribute('class', 'cart__item');
-    article.setAttribute('data-id', '');
-    article.setAttribute('data-color', '');
+    article.setAttribute('data-id', id);
+    article.setAttribute('data-color', color);
     getSection.appendChild(article);
 
     let divCartItemImg = createDiv();
@@ -29,8 +30,8 @@ function createArticleForSection() {
     article.appendChild(divCartItemImg);
 
     let img = document.createElement('img');
-    img.setAttribute('src' , '');
-    img.setAttribute('alt', '');
+    img.setAttribute('src' , image);
+    img.setAttribute('alt', alt);
     divCartItemImg.appendChild(img);
 
     let divCartItemContent = createDiv();
@@ -42,15 +43,15 @@ function createArticleForSection() {
     divCartItemContent.appendChild(divCartItemContentDescription);
 
     let nameProduct = document.createElement('h2');
-    nameProduct.innerText = 'Nom du produit';
+    nameProduct.innerText = name;
     divCartItemContentDescription.appendChild(nameProduct);
 
     let colorProduct = createParagraph();
-    colorProduct.innerText = 'Vert';
+    colorProduct.innerText = color;
     divCartItemContentDescription.appendChild(colorProduct);
     
     let priceProduct = createParagraph();
-    priceProduct.innerText = 'Vert';
+    priceProduct.innerText = price * quantity + ' €';
     divCartItemContentDescription.appendChild(priceProduct);
 
     let divCartItemContentSettings = createDiv();
@@ -71,7 +72,10 @@ function createArticleForSection() {
     inputForQuantityProduct.setAttribute('name', 'itemQuantity');
     inputForQuantityProduct.setAttribute('min', '1');
     inputForQuantityProduct.setAttribute('max', '100');
-    inputForQuantityProduct.setAttribute('value', '42');
+    inputForQuantityProduct.setAttribute('value', quantity);
+    inputForQuantityProduct.addEventListener('change', function(e) {
+        priceProduct.innerText = price * e.target.value;
+    })
     divCartItemContentSettingsQuantity.appendChild(inputForQuantityProduct);
 
     let divCartItemContentSettingsDelete = createDiv();
@@ -84,23 +88,12 @@ function createArticleForSection() {
     divCartItemContentSettingsDelete.appendChild(deleteProduct);
 
 }
-createArticleForSection()
 
-{/* <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
-    <div class="cart__item__content">
-        <div class="cart__item__content__description">
-            <h2>Nom du produit</h2>
-            <p>Vert</p>
-            <p>42,00 €</p>
-        </div>
-        <div class="cart__item__content__settings">
-            <div class="cart__item__content__settings__quantity">
-                <p>Qté : </p>
-                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
-            </div>
-            <div class="cart__item__content__settings__delete">
-                <p class="deleteItem">Supprimer</p>
-            </div>
-        </div>
-    </div>
-</article> */}
+function contentCart() {
+    let array = getCartOnCartPage();
+    console.log(array)
+    for(let i = 0; i < array.length; i++) {
+        createArticleForSection(array[i].id, array[i].color, array[i].quantity, array[i].img, array[i].name, array[i].price, array[i].alt)
+    }
+}
+contentCart()
