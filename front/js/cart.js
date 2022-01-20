@@ -1,68 +1,77 @@
-function getCartOnCartPage() {
-    let cart = localStorage.getItem('Cart');
-    if (cart == null) {
-        return [];
-    } else {
-        return JSON.parse(cart);
-    }
-}
-
-function createDiv () {
-    return document.createElement('div');
-}
-
-function createParagraph () {
-    return document.createElement('p');
-}
-
-
-function createArticleForSection(id, color, quantity, image, name, price, alt) {
+// Creat all the Element for the section in HTML
+function getSectionAndAddIn(id, color, image, alt, name, color, price, quantity){
     let getSection = document.getElementById('cart__items');
+    appendToElement(createArticleWithAtribute(id, color, image, alt, name, color, price, quantity), getSection);
+}
 
+function createArticleWithAtribute(id, color, image, alt, name, color, price, quantity) {
     let article =  document.createElement('article');
     article.setAttribute('class', 'cart__item');
     article.setAttribute('data-id', id);
     article.setAttribute('data-color', color);
-    getSection.appendChild(article);
 
-    let divCartItemImg = createDiv();
-    divCartItemImg.setAttribute('class', 'cart__item__img')
-    article.appendChild(divCartItemImg);
+    appendToElement(createBlocDivImg(image, alt), article);
+    appendToElement(createDivContent(name, color, price, quantity), article);
+
+    return article;
+}
+
+function createBlocDivImg(image, alt) {
+    let divCartItemImg = document.createElement('div');
+    divCartItemImg.setAttribute('class', 'cart__item__img');
 
     let img = document.createElement('img');
     img.setAttribute('src' , image);
     img.setAttribute('alt', alt);
     divCartItemImg.appendChild(img);
 
-    let divCartItemContent = createDiv();
-    divCartItemContent.setAttribute('class', 'cart__item__content');
-    article.appendChild(divCartItemContent);
+    return divCartItemImg;
+}
 
-    let divCartItemContentDescription = createDiv();
+function createDivContent(name, color, price, quantity) {
+    let divCartItemContent = document.createElement('div');
+    divCartItemContent.setAttribute('class', 'cart__item__content');
+
+    appendToElement(createBlocDivDescription(name, color, price), divCartItemContent);
+    appendToElement(createDivSettings(quantity), divCartItemContent);
+
+    return divCartItemContent;
+}
+
+function createBlocDivDescription(name, color, price) {
+    let divCartItemContentDescription = document.createElement('div');
     divCartItemContentDescription.setAttribute('class', 'cart__item__content__description');
-    divCartItemContent.appendChild(divCartItemContentDescription);
 
     let nameProduct = document.createElement('h2');
     nameProduct.innerText = name;
     divCartItemContentDescription.appendChild(nameProduct);
 
-    let colorProduct = createParagraph();
+    let colorProduct = document.createElement('p');
     colorProduct.innerText = color;
     divCartItemContentDescription.appendChild(colorProduct);
-    
-    let priceProduct = createParagraph();
-    priceProduct.innerText = price * quantity + ' €';
+
+    let priceProduct = document.createElement('p');
+    priceProduct.innerText = price + ' €';
     divCartItemContentDescription.appendChild(priceProduct);
 
-    let divCartItemContentSettings = createDiv();
+    return divCartItemContentDescription;
+}
+
+function createDivSettings(quantity) {
+    let divCartItemContentSettings = document.createElement('div');
     divCartItemContentSettings.setAttribute('class', 'cart__item__content__settings');
-    divCartItemContent.appendChild(divCartItemContentSettings);
 
-    let divCartItemContentSettingsQuantity = createDiv();
+    appendToElement(createBlocDivSettingsQuantity(quantity), divCartItemContentSettings);
+    appendToElement(createBlocDivSettingsDelete(), divCartItemContentSettings);
+
+    return divCartItemContentSettings;
+}
+
+function createBlocDivSettingsQuantity(quantity) {
+    let divCartItemContentSettingsQuantity = document.createElement('div');
     divCartItemContentSettingsQuantity.setAttribute('class', 'cart__item__content__settings__quantity');
-    divCartItemContentSettings.appendChild(divCartItemContentSettingsQuantity);
 
-    let quantityProduct = createParagraph();
+    let quantityProduct = document.createElement('p');
     quantityProduct.innerText = 'Qté : ';
     divCartItemContentSettingsQuantity.appendChild(quantityProduct);
 
@@ -73,27 +82,42 @@ function createArticleForSection(id, color, quantity, image, name, price, alt) {
     inputForQuantityProduct.setAttribute('min', '1');
     inputForQuantityProduct.setAttribute('max', '100');
     inputForQuantityProduct.setAttribute('value', quantity);
-    inputForQuantityProduct.addEventListener('change', function(e) {
-        priceProduct.innerText = price * e.target.value;
-    })
     divCartItemContentSettingsQuantity.appendChild(inputForQuantityProduct);
 
-    let divCartItemContentSettingsDelete = createDiv();
-    divCartItemContentSettingsDelete.setAttribute('class', 'cart__item__content__settings__delete');
-    divCartItemContentSettings.appendChild(divCartItemContentSettingsDelete);
+    return divCartItemContentSettingsQuantity;
+}
 
-    let deleteProduct = createParagraph();
+function createBlocDivSettingsDelete() {
+    let divCartItemContentSettingsDelete = document.createElement('div');
+    divCartItemContentSettingsDelete.setAttribute('class', 'cart__item__content__settings__delete');
+
+    let deleteProduct = document.createElement('p');
     deleteProduct.setAttribute('class', 'deleteItem');
     deleteProduct.innerText = 'Supprimer';
     divCartItemContentSettingsDelete.appendChild(deleteProduct);
 
+    return divCartItemContentSettingsDelete;
 }
 
-function contentCart() {
-    let array = getCartOnCartPage();
-    console.log(array)
-    for(let i = 0; i < array.length; i++) {
-        createArticleForSection(array[i].id, array[i].color, array[i].quantity, array[i].img, array[i].name, array[i].price, array[i].alt)
+function appendToElement(child, parent) {
+    let getFunction = child;
+    parent.appendChild(getFunction);
+}
+
+// Create function that get the Array in the storage
+function getArrayStorage() {
+    let basket = localStorage.getItem('Cart');
+    if(basket != null) {
+        return JSON.parse(basket);
     }
 }
-contentCart()
+
+// Create function who show the products in cart page
+function showProduct() {
+    let basket = getArrayStorage();
+    for(let i = 0; i < basket.length; i++) {
+        getSectionAndAddIn(basket[i].id, basket[i].color, basket[i].img, basket[i].alt, basket[i].name, basket[i].color, basket[i].price, basket[i].quantity)
+    }
+}
+
+showProduct()
