@@ -126,7 +126,6 @@ function addCart(product) {
             foundProduct.quantity = parseInt(foundProduct.quantity) + parseInt(product.quantity)
             
         } else {
-            product.quantity
             basket.push(product);
         }
 
