@@ -144,31 +144,62 @@ function changeQuantityInStorage() {
     }
 
 }
-
-showProduct()
-changeQuantityInStorage()
-
-// Make an function who manage delete of the product
-let deleteProduct = document.querySelectorAll('.deleteItem');
-let bask = getArrayStorage();
-for (let m = 0; m < deleteProduct.length; m++) {
-    deleteProduct[m].addEventListener('click', () => {
-        // event.preventDefault();
-        let getChangeId = bask[m].id;
-        let getChangeColor = bask[m].color;
-        // let foundProduct = bask.find(p => p.id == getChangeId && p.color == getChangeColor);
-        // if(foundProduct != undefined){
-        //     bask.filter(p => p.id != getChangeId && p.color != getChangeColor)
-        // }
-        bask = bask.filter(p => p.id !== getChangeId && p.color !== getChangeColor)
-        saveCart(bask)
-    })
-}
-
-
-
-
 /**
  * See with Yazid if reload the page is ok for the price on the cart page 
  * or if i have to make a function who manage this 
 */
+
+// Make an function who manage delete of the product
+function deleteProduct() {
+    let deleteProduct = document.querySelectorAll('.deleteItem');
+    let bask = getArrayStorage();
+    for (let m = 0; m < deleteProduct.length; m++) {
+        deleteProduct[m].addEventListener('click', (e) => {
+            let getChangeId = bask[m].id;
+            let getChangeColor = bask[m].color;
+            let change = getChangeId + getChangeColor;
+            bask = bask.filter(p => p.id + p.color != change);
+            saveCart(bask);
+            location.reload();
+        })
+    }
+}
+
+showProduct()
+changeQuantityInStorage()
+deleteProduct()
+
+/***
+ * Make an function who get the value of the input and make an object contact with data of form
+ * Show an error msg if the input are false
+ */
+
+function getValueInput() {
+    let getFirstName = document.getElementById('firstName');
+    getFirstName.addEventListener('change', () => {
+        console.log(getFirstName.value)
+    })
+
+    let getLastName = document.getElementById('lastName');
+    getLastName.addEventListener('change', () => {
+        console.log(getLastName.value)
+    })
+
+    let getAddress = document.getElementById('address');
+    getAddress.addEventListener('change', () => {
+        console.log(getAddress.value)
+    })
+
+    let getCity = document.getElementById('city');
+    getCity.addEventListener('change', () => {
+        console.log(getCity.value)
+    })
+
+    let getEmail = document.getElementById('email');
+    getEmail.addEventListener('change', () => {
+        console.log(getEmail.value)
+    })
+}
+getValueInput()
+
+
