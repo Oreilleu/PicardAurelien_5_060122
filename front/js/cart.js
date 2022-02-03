@@ -172,34 +172,99 @@ deleteProduct()
 /***
  * Make an function who get the value of the input and make an object contact with data of form
  * Show an error msg if the input are false
+ * return in an object all the value of the form 
  */
 
-function getValueInput() {
-    let getFirstName = document.getElementById('firstName');
-    getFirstName.addEventListener('change', () => {
-        console.log(getFirstName.value)
-    })
 
-    let getLastName = document.getElementById('lastName');
-    getLastName.addEventListener('change', () => {
-        console.log(getLastName.value)
-    })
-
-    let getAddress = document.getElementById('address');
-    getAddress.addEventListener('change', () => {
-        console.log(getAddress.value)
-    })
-
-    let getCity = document.getElementById('city');
-    getCity.addEventListener('change', () => {
-        console.log(getCity.value)
-    })
-
-    let getEmail = document.getElementById('email');
-    getEmail.addEventListener('change', () => {
-        console.log(getEmail.value)
-    })
+let getForm = document.querySelector('.cart__order__form')
+let form = {
+    firstName: this,
+    lastName: this,
+    address: this,
+    city: this,
+    email: this
 }
-getValueInput()
+getForm.firstName.addEventListener('change', (e) => {
+    if(validFirstAndLastNameAndCity(getForm.firstName, e)){
+        return form.firstName = e.target.value;
+    }
+});
+console.log(form)
+getForm.lastName.addEventListener('change', (e) => {
+    if(validFirstAndLastNameAndCity(getForm.lastName, e)){
+        return form.lastName = e.target.value;
+    }
+})
 
+getForm.city.addEventListener('change', (e) => {
+    if(validFirstAndLastNameAndCity(getForm.city, e)){
+        return form.city = e.target.value;
+    }
+})
 
+getForm.address.addEventListener('change', (e) => {
+    if(validAddress(getForm.address)){
+        return form.address = e.target.value;
+    }
+})
+
+getForm.email.addEventListener('change', (e) => {
+    if(validEmail(getForm.email)){
+        return form.email = e.target.value;
+    }
+})
+
+function validFirstAndLastNameAndCity(input, e) {
+    let getFirstNameError = document.getElementById('firstNameErrorMsg');
+    let getLastNameError = document.getElementById('lastNameErrorMsg');
+    let getCityError = document.getElementById('cityErrorMsg');
+    let target = e.target
+    if(/^[A-Za-zàâäéèêëïîôöùûüÿç-]{3,20}$/.test(input.value)){
+        if(target.name == getForm.firstName.name) {
+            getFirstNameError.innerText = 'Prénom valide';
+        } else if (target.name == getForm.lastName.name){
+            getLastNameError.innerText = 'Nom valide';
+        } else if (target.name == getForm.city.name) {
+            getCityError.innerText = 'Ville valide';
+        }
+        return true;
+    }
+    else {
+        if(target.name == getForm.firstName.name) {
+            getFirstNameError.innerText = 'Prénom invalide';
+        } else if (target.name == getForm.lastName.name){
+            getLastNameError.innerText = 'Nom invalide';
+        } else if (target.name == getForm.city.name) {
+            getCityError.innerText = 'Ville invalide';
+        }
+        return false;
+    }
+}
+
+function validAddress(input) {
+    if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
+        document
+        .getElementById('addressErrorMsg')
+        .innerText = 'Adresse Valide'
+        return true;
+    } else {
+        document
+        .getElementById('addressErrorMsg')
+        .innerText = 'Adresse au mauvais format veuillez essayer avec ce format : \'00 rue du 8 mai 50258\''
+        return false;
+    }
+}
+
+function validEmail(input) {
+    if(/^[0-9A-Za-z-.\w]{3,40}[@][A-Za-z0,9-\w]{1,10}.[a-z]{2,10}$/.test(input.value)) {
+        document
+            .getElementById('emailErrorMsg')
+            .innerText = 'Adresse mail valide'
+        return true;
+    } else {
+        document
+            .getElementById('emailErrorMsg')
+            .innerText = 'Adresse mail invalide'
+        return false;
+    }
+}
