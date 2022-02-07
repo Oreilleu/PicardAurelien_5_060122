@@ -175,50 +175,73 @@ deleteProduct()
  * return in an object all the value of the form 
  */
 
-
-let getForm = document.querySelector('.cart__order__form')
-let form = {
+ let getForm = document.querySelector('.cart__order__form')
+ let getButton = document.querySelector('#order')
+ let contact = {
     firstName: this,
     lastName: this,
     address: this,
     city: this,
     email: this
 }
+
 getForm.firstName.addEventListener('change', (e) => {
     if(validFirstAndLastNameAndCity(getForm.firstName, e)){
-        return form.firstName = e.target.value;
+        return contact.firstName = e.target.value;
     }
 });
-console.log(form)
 getForm.lastName.addEventListener('change', (e) => {
     if(validFirstAndLastNameAndCity(getForm.lastName, e)){
-        return form.lastName = e.target.value;
+        return contact.lastName = e.target.value;
     }
 })
-
+    
 getForm.city.addEventListener('change', (e) => {
     if(validFirstAndLastNameAndCity(getForm.city, e)){
-        return form.city = e.target.value;
+        return contact.city = e.target.value;
     }
 })
-
+    
 getForm.address.addEventListener('change', (e) => {
     if(validAddress(getForm.address)){
-        return form.address = e.target.value;
+        return contact.address = e.target.value;
+    }
+})
+    
+getForm.email.addEventListener('change', (e) => {
+    if(validEmail(getForm.email)){
+        return contact.email = e.target.value;
     }
 })
 
-getForm.email.addEventListener('change', (e) => {
-    if(validEmail(getForm.email)){
-        return form.email = e.target.value;
+
+
+// Je veux vérifier que tout les champs sont rempli 
+getButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    let product = getArrayStorage();
+    if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
+        console.log(product)
+        fetch('http://localhost:3000/api/products/order', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(contact, product)
+        })
+    }else {
+        alert('Veuillez remplir tous les champs')
     }
 })
+
+
 
 function validFirstAndLastNameAndCity(input, e) {
     let getFirstNameError = document.getElementById('firstNameErrorMsg');
     let getLastNameError = document.getElementById('lastNameErrorMsg');
     let getCityError = document.getElementById('cityErrorMsg');
-    let target = e.target
+    let target = e.target;
     if(/^[A-Za-zàâäéèêëïîôöùûüÿç-]{3,20}$/.test(input.value)){
         if(target.name == getForm.firstName.name) {
             getFirstNameError.innerText = 'Prénom valide';
