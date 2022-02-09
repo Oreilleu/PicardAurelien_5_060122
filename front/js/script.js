@@ -13,7 +13,7 @@ fetch('http://localhost:3000/api/products')
 .then(data => {
     for(let i = 0; i < data.length; i++) {
         a = document.createElement('a');
-        a.setAttribute('href', new URL('http://127.0.0.1:33287//front/html/product.html?id=' + data[i]._id));
+        a.setAttribute('href', new URL('http://127.0.0.1:40711//front/html/product.html?id=' + data[i]._id));
         items.appendChild(a);
 
         article = document.createElement('article');

@@ -1,3 +1,7 @@
+// if(window.location == 'http://127.0.0.1:40711//front/html/cart.html') {
+
+// }
+
 // Creat all the Element for the section in HTML
 function getSectionAndAddIn(id, color, image, alt, name, color, price, quantity){
     let getSection = document.getElementById('cart__items');
@@ -165,15 +169,21 @@ function deleteProduct() {
     }
 }
 
+// if(window.location == 'http://127.0.0.1:40711//front/html/cart.html') {
+
+// }
 showProduct()
 changeQuantityInStorage()
 deleteProduct()
+
+
 
 /***
  * Make an function who get the value of the input and make an object contact with data of form
  * Show an error msg if the input are false
  * return in an object all the value of the form 
  */
+
 
  let getForm = document.querySelector('.cart__order__form')
  let getButton = document.querySelector('#order')
@@ -218,24 +228,46 @@ getForm.email.addEventListener('change', (e) => {
 
 // Je veux vérifier que tout les champs sont rempli 
 getButton.addEventListener('click', (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     let product = getArrayStorage();
+    let products = []
+    for(let i = 0; i < product.length; i++){
+        products.push(product[i].id)
+    }
     if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
-        console.log(product)
-        fetch('http://localhost:3000/api/products/order', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(contact, product)
-        })
+        let reg = {
+            contact,
+            products
+        }
+        fetchPost(reg);
     }else {
         alert('Veuillez remplir tous les champs')
     }
 })
 
-
+function fetchPost(data) {
+    fetch('http://localhost:3000/api/products/order', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    })
+    .then((res) => {
+        if(res.ok){
+            return res.json();
+        }
+    })
+    .then((value) => {
+        window.location.href='http://127.0.0.1:40711//front/html/confirmation.html?id=' + value.orderId;
+    })
+    // .then((value) => {
+    //     document
+    //         .getElementById('orderId')
+    //         .innerHTML = value.orderId
+    // })
+}
 
 function validFirstAndLastNameAndCity(input, e) {
     let getFirstNameError = document.getElementById('firstNameErrorMsg');
@@ -291,3 +323,6 @@ function validEmail(input) {
         return false;
     }
 }
+
+// let getOrderID = document.getElementById('orderId');
+// console.log(getOrderID)
