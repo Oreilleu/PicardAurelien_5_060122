@@ -88,17 +88,25 @@ function ClickOnCart() {
     
     let button = document.getElementById('addToCart');
     button.addEventListener('click', function() {
-        let cart = {
-            id: idItem,
-            color: colorItem,
-            quantity: nbItem,
-            img: imgItem,
-            name: nameItem,
-            price: priceItem,
-            alt: altItem
+        if(nbItem == 0 || nbItem == null) {
+            alert('Veuillez choisir une quantité');
+        } else if (nbItem > 100) {
+            alert('Veuillez choisir une quantité infèrieur à 100');
+        } else if (colorItem == null || colorItem == "") {
+            alert('Veuillez choisir couleur');
+        } else {
+            let cart = {
+                id: idItem,
+                color: colorItem,
+                quantity: nbItem,
+                img: imgItem,
+                name: nameItem,
+                // price: priceItem,
+                alt: altItem
+            }
+            return addCart(cart)
         }
         // console.log(cart)
-        return addCart(cart)
     });
 }
 
@@ -136,35 +144,6 @@ function addCart(product) {
 AddItemWithDataToProducts()
 AddOptionSelect()
 ClickOnCart()
-
-// Utilisation d'object obligatoire ?
-// Voir avec yazid si il y avait possibilité de faire comme si dessous donc retourner a chaque clique un tableau unique
-
-// for(let c = 0; c < arrayCart.length; c++){
-//     if (compteur[arrayCart[c]] === undefined) {
-//         compteur.push(cart)
-//         cart = []
-//         console.log(compteur)
-//         console.log('je push cart')
-     
-//     } 
-//     else if (cart[0] == compteur[c][0] && cart[1] == compteur[c][1]){
-//         // parseInt(cart[2])++
-//         console.log(compteur)
-//         console.log('je ne push pas cart')
-//         cart = []
-            
-//     }
-// }
-        /**
-         * Lorsqu'un je clique sur AJouter au panier on ajoute le produit au panier OK
-         * SI le produit n'est pas présent dans le panier
-         *      Ajoute l'élément dans le panier
-         * SINON SI le produit est présent (id et couleur identique)
-         *      J'incrémente la quantité du produit correspondant 
-        */
-// localStorage.setItem('arrayCart', JSON.stringify(arrayCart));
-
 
 
 

@@ -1,21 +1,17 @@
-// if(window.location == 'http://127.0.0.1:40711//front/html/cart.html') {
-
-// }
-
 // Creat all the Element for the section in HTML
-function getSectionAndAddIn(id, color, image, alt, name, color, price, quantity){
+function getSectionAndAddIn(id, color, image, alt, name, color, quantity){
     let getSection = document.getElementById('cart__items');
-    appendToElement(createArticleWithAtribute(id, color, image, alt, name, color, price, quantity), getSection);
+    appendToElement(createArticleWithAtribute(id, color, image, alt, name, color, quantity), getSection);
 }
 
-function createArticleWithAtribute(id, color, image, alt, name, color, price, quantity) {
+function createArticleWithAtribute(id, color, image, alt, name, color, quantity) {
     let article =  document.createElement('article');
     article.setAttribute('class', 'cart__item');
     article.setAttribute('data-id', id);
     article.setAttribute('data-color', color);
 
     appendToElement(createBlocDivImg(image, alt), article);
-    appendToElement(createDivContent(name, color, price, quantity), article);
+    appendToElement(createDivContent(name, color, id, quantity), article);
 
     return article;
 }
@@ -32,17 +28,18 @@ function createBlocDivImg(image, alt) {
     return divCartItemImg;
 }
 
-function createDivContent(name, color, price, quantity) {
+function createDivContent(name, color, id, quantity) {
     let divCartItemContent = document.createElement('div');
     divCartItemContent.setAttribute('class', 'cart__item__content');
 
-    appendToElement(createBlocDivDescription(name, color, price, quantity), divCartItemContent);
+    appendToElement(createBlocDivDescription(name, color, id, quantity), divCartItemContent);
     appendToElement(createDivSettings(quantity), divCartItemContent);
 
     return divCartItemContent;
 }
 
-function createBlocDivDescription(name, color, price, quantity) {
+// Utiliser la quantité * price pour le prix mais réussir a extraire le price
+function createBlocDivDescription(name, color, id, quantity) {
     let divCartItemContentDescription = document.createElement('div');
     divCartItemContentDescription.setAttribute('class', 'cart__item__content__description');
 
@@ -55,7 +52,9 @@ function createBlocDivDescription(name, color, price, quantity) {
     divCartItemContentDescription.appendChild(colorProduct);
 
     let priceProduct = document.createElement('p');
-    priceProduct.innerText = price * quantity + ' €';
+    // let price = getPrice(id);
+    // priceProduct.innerText = price + ' €';
+    getPrice(id, priceProduct, quantity)
     divCartItemContentDescription.appendChild(priceProduct);
 
     return divCartItemContentDescription;
@@ -71,7 +70,6 @@ function createDivSettings(quantity) {
     return divCartItemContentSettings;
 }
 
-// Finir la functio addEventListener
 function createBlocDivSettingsQuantity(quantity) {
     let divCartItemContentSettingsQuantity = document.createElement('div');
     divCartItemContentSettingsQuantity.setAttribute('class', 'cart__item__content__settings__quantity');
@@ -109,6 +107,24 @@ function appendToElement(child, parent) {
     parent.appendChild(getFunction);
 }
 
+// Faire une function qui retour un prix grace a fetch si l'idItem == idLocalstorage
+function getPrice(item, varPrice, quantity) {
+    fetch('http://localhost:3000/api/products')
+    .then(res => res.json())
+    .then(data => {
+        for(let i = 0; i < data.length; i++) {
+            if(item == data[i]._id) {
+                varPrice.innerText = data[i].price * quantity;
+            }
+        }
+    })
+}
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------- */
+
+
+
 // Create function that get the Array in the storage
 function getArrayStorage() {
     let basket = localStorage.getItem('Cart');
@@ -126,7 +142,7 @@ function saveCart(basket) {
 function showProduct() {
     let basket = getArrayStorage();
     for(let i = 0; i < basket.length; i++) {
-        getSectionAndAddIn(basket[i].id, basket[i].color, basket[i].img, basket[i].alt, basket[i].name, basket[i].color, basket[i].price, basket[i].quantity)
+        getSectionAndAddIn(basket[i].id, basket[i].color, basket[i].img, basket[i].alt, basket[i].name, basket[i].color,/* basket[i].price,*/ basket[i].quantity)
     }
 }
 
@@ -169,160 +185,161 @@ function deleteProduct() {
     }
 }
 
-// if(window.location == 'http://127.0.0.1:40711//front/html/cart.html') {
-
-// }
-showProduct()
-changeQuantityInStorage()
-deleteProduct()
-
-
-
-/***
- * Make an function who get the value of the input and make an object contact with data of form
- * Show an error msg if the input are false
- * return in an object all the value of the form 
- */
-
-
- let getForm = document.querySelector('.cart__order__form')
- let getButton = document.querySelector('#order')
- let contact = {
-    firstName: this,
-    lastName: this,
-    address: this,
-    city: this,
-    email: this
+// Récuperer la totalité des input et faire la somme dans cart__price
+// Et récuperer la valeur du prix, faire la somme et les envoyé dans totalprice
+function totalPrice() {
+    
 }
 
-getForm.firstName.addEventListener('change', (e) => {
-    if(validFirstAndLastNameAndCity(getForm.firstName, e)){
-        return contact.firstName = e.target.value;
-    }
-});
-getForm.lastName.addEventListener('change', (e) => {
-    if(validFirstAndLastNameAndCity(getForm.lastName, e)){
-        return contact.lastName = e.target.value;
-    }
-})
-    
-getForm.city.addEventListener('change', (e) => {
-    if(validFirstAndLastNameAndCity(getForm.city, e)){
-        return contact.city = e.target.value;
-    }
-})
-    
-getForm.address.addEventListener('change', (e) => {
-    if(validAddress(getForm.address)){
-        return contact.address = e.target.value;
-    }
-})
-    
-getForm.email.addEventListener('change', (e) => {
-    if(validEmail(getForm.email)){
-        return contact.email = e.target.value;
-    }
-})
+if(window.location == 'http://127.0.0.1:46841//front/html/cart.html'){
+    showProduct()
+    changeQuantityInStorage()
+    deleteProduct()
+
+    /***
+     * Make an function who get the value of the input and make an object contact with data of form
+     * Show an error msg if the input are false
+     * return in an object all the value of the form 
+     */
 
 
-
-// Je veux vérifier que tout les champs sont rempli 
-getButton.addEventListener('click', (event) => {
-    // event.preventDefault();
-    let product = getArrayStorage();
-    let products = []
-    for(let i = 0; i < product.length; i++){
-        products.push(product[i].id)
+    let getForm = document.querySelector('.cart__order__form')
+    let getButton = document.querySelector('#order')
+    let contact = {
+        firstName: this,
+        lastName: this,
+        address: this,
+        city: this,
+        email: this
     }
-    if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
-        let reg = {
-            contact,
-            products
+
+    getForm.firstName.addEventListener('change', (e) => {
+        if(validFirstAndLastNameAndCity(getForm.firstName, e)){
+            return contact.firstName = e.target.value;
         }
-        fetchPost(reg);
-    }else {
-        alert('Veuillez remplir tous les champs')
-    }
-})
-
-function fetchPost(data) {
-    fetch('http://localhost:3000/api/products/order', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data),
-    })
-    .then((res) => {
-        if(res.ok){
-            return res.json();
+    });
+    getForm.lastName.addEventListener('change', (e) => {
+        if(validFirstAndLastNameAndCity(getForm.lastName, e)){
+            return contact.lastName = e.target.value;
         }
     })
-    .then((value) => {
-        window.location.href='http://127.0.0.1:40711//front/html/confirmation.html?id=' + value.orderId;
+        
+    getForm.city.addEventListener('change', (e) => {
+        if(validFirstAndLastNameAndCity(getForm.city, e)){
+            return contact.city = e.target.value;
+        }
     })
-    // .then((value) => {
-    //     document
-    //         .getElementById('orderId')
-    //         .innerHTML = value.orderId
-    // })
-}
-
-function validFirstAndLastNameAndCity(input, e) {
-    let getFirstNameError = document.getElementById('firstNameErrorMsg');
-    let getLastNameError = document.getElementById('lastNameErrorMsg');
-    let getCityError = document.getElementById('cityErrorMsg');
-    let target = e.target;
-    if(/^[A-Za-zàâäéèêëïîôöùûüÿç-]{3,20}$/.test(input.value)){
-        if(target.name == getForm.firstName.name) {
-            getFirstNameError.innerText = 'Prénom valide';
-        } else if (target.name == getForm.lastName.name){
-            getLastNameError.innerText = 'Nom valide';
-        } else if (target.name == getForm.city.name) {
-            getCityError.innerText = 'Ville valide';
+        
+    getForm.address.addEventListener('change', (e) => {
+        if(validAddress(getForm.address)){
+            return contact.address = e.target.value;
         }
-        return true;
-    }
-    else {
-        if(target.name == getForm.firstName.name) {
-            getFirstNameError.innerText = 'Prénom invalide';
-        } else if (target.name == getForm.lastName.name){
-            getLastNameError.innerText = 'Nom invalide';
-        } else if (target.name == getForm.city.name) {
-            getCityError.innerText = 'Ville invalide';
+    })
+        
+    getForm.email.addEventListener('change', (e) => {
+        if(validEmail(getForm.email)){
+            return contact.email = e.target.value;
         }
-        return false;
+    })
+
+    function validFirstAndLastNameAndCity(input, e) {
+        let getFirstNameError = document.getElementById('firstNameErrorMsg');
+        let getLastNameError = document.getElementById('lastNameErrorMsg');
+        let getCityError = document.getElementById('cityErrorMsg');
+        let target = e.target;
+        if(/^[A-Za-zàâäéèêëïîôöùûüÿç-]{3,20}$/.test(input.value)){
+            if(target.name == getForm.firstName.name) {
+                getFirstNameError.innerText = 'Prénom valide';
+            } else if (target.name == getForm.lastName.name){
+                getLastNameError.innerText = 'Nom valide';
+            } else if (target.name == getForm.city.name) {
+                getCityError.innerText = 'Ville valide';
+            }
+            return true;
+        }
+        else {
+            if(target.name == getForm.firstName.name) {
+                getFirstNameError.innerText = 'Prénom invalide';
+            } else if (target.name == getForm.lastName.name){
+                getLastNameError.innerText = 'Nom invalide';
+            } else if (target.name == getForm.city.name) {
+                getCityError.innerText = 'Ville invalide';
+            }
+            return false;
+        }
     }
+
+    function validAddress(input) {
+        if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
+            document
+            .getElementById('addressErrorMsg')
+            .innerText = 'Adresse Valide'
+            return true;
+        } else {
+            document
+            .getElementById('addressErrorMsg')
+            .innerText = 'Adresse au mauvais format veuillez essayer avec ce format : \'00 rue du 8 mai 50258\''
+            return false;
+        }
+    }
+
+    function validEmail(input) {
+        if(/^[0-9A-Za-z-.\w]{3,40}[@][A-Za-z0,9-\w]{1,10}.[a-z]{2,10}$/.test(input.value)) {
+            document
+                .getElementById('emailErrorMsg')
+                .innerText = 'Adresse mail valide'
+            return true;
+        } else {
+            document
+                .getElementById('emailErrorMsg')
+                .innerText = 'Adresse mail invalide'
+            return false;
+        }
+    }
+
+
+    // Je veux vérifier que tout les champs sont rempli 
+    getButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        let product = getArrayStorage();
+        let products = []
+        for(let i = 0; i < product.length; i++){
+            products.push(product[i].id)
+        }
+        if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
+            let reg = {
+                contact,
+                products
+            }
+            fetchPost(reg);
+        }else {
+            alert('Veuillez remplir tous les champs')
+        }
+    })
+
+    function fetchPost(data) {
+        fetch('http://localhost:3000/api/products/order', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        })
+        .then((res) => {
+            if(res.ok){
+                return res.json();
+            }
+        })
+        .then((value) => {
+            window.location.href='http://127.0.0.1:46841//front/html/confirmation.html?id=' + value.orderId;
+        })
+    }
+
+} else {
+    let test = document.querySelector('#orderId');
+    let params = new URLSearchParams(window.location.search);
+    test.innerText = params.get('id');
+    localStorage.remove;
 }
 
-function validAddress(input) {
-    if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
-        document
-        .getElementById('addressErrorMsg')
-        .innerText = 'Adresse Valide'
-        return true;
-    } else {
-        document
-        .getElementById('addressErrorMsg')
-        .innerText = 'Adresse au mauvais format veuillez essayer avec ce format : \'00 rue du 8 mai 50258\''
-        return false;
-    }
-}
-
-function validEmail(input) {
-    if(/^[0-9A-Za-z-.\w]{3,40}[@][A-Za-z0,9-\w]{1,10}.[a-z]{2,10}$/.test(input.value)) {
-        document
-            .getElementById('emailErrorMsg')
-            .innerText = 'Adresse mail valide'
-        return true;
-    } else {
-        document
-            .getElementById('emailErrorMsg')
-            .innerText = 'Adresse mail invalide'
-        return false;
-    }
-}
-
-// let getOrderID = document.getElementById('orderId');
-// console.log(getOrderID)
