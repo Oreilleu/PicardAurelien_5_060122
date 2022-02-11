@@ -187,14 +187,44 @@ function deleteProduct() {
 
 // Récuperer la totalité des input et faire la somme dans cart__price
 // Et récuperer la valeur du prix, faire la somme et les envoyé dans totalprice
-function totalPrice() {
+function QuantityAndPrice() {
+    let sumQuantity = totalQuantity();
+    document
+        .getElementById('totalQuantity')
+        .innerText = sumQuantity;
     
+    let sumPrice = totalPrice();
+    document
+        .getElementById('totalPrice')
+        .innerText = sumPrice;
+
 }
 
-if(window.location == 'http://127.0.0.1:46841//front/html/cart.html'){
+function totalQuantity() {
+    let input = document.querySelectorAll('.itemQuantity');
+    let sum = 0;
+    for(let i = 0; i < input.length; i++) {
+        let parse = parseInt(input[i].value)
+        sum += parse
+    }
+    return sum;
+}
+
+function totalPrice() {
+    let price = document.querySelectorAll('.cart__item__content__description');
+    let sum = 0;
+    for(let i = 0; i < price.length; i++) {
+        let parse = parseInt(price[i].lastChild.innerText);
+        sum += parse
+    }
+    return sum;
+}
+
+if(window.location == 'http://127.0.0.1:46693//front/html/cart.html'){
     showProduct()
     changeQuantityInStorage()
     deleteProduct()
+    QuantityAndPrice()
 
     /***
      * Make an function who get the value of the input and make an object contact with data of form
@@ -332,7 +362,7 @@ if(window.location == 'http://127.0.0.1:46841//front/html/cart.html'){
             }
         })
         .then((value) => {
-            window.location.href='http://127.0.0.1:46841//front/html/confirmation.html?id=' + value.orderId;
+            window.location.href='http://127.0.0.1:46693//front/html/confirmation.html?id=' + value.orderId;
         })
     }
 
@@ -340,6 +370,6 @@ if(window.location == 'http://127.0.0.1:46841//front/html/cart.html'){
     let test = document.querySelector('#orderId');
     let params = new URLSearchParams(window.location.search);
     test.innerText = params.get('id');
-    localStorage.remove;
+    localStorage.clear();
 }
 
