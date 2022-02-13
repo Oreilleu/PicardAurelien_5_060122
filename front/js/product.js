@@ -126,7 +126,6 @@ function getCart() {
 function addCart(product) {
     let basket = getCart();
     let foundProduct = basket.find(p => p.id == product.id && p.color == product.color);
-    // console.log(foundProduct)
         if(foundProduct != undefined) {
             if(product.quantity == null) {
                 product.quantity = 0;
@@ -136,9 +135,16 @@ function addCart(product) {
         } else {
             basket.push(product);
         }
-
-
+    sortBasket(basket);
     saveCart(basket);
+}
+
+function sortBasket(basket) {
+    basket.sort((a,b) => {
+        if(a.id < b.id) {return -1;}
+        if(a.id > b.id) {return 1;}
+        if(a.id == b.id) {return 0;}
+    })
 }
 
 AddItemWithDataToProducts()

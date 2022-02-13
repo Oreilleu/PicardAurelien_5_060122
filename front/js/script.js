@@ -7,13 +7,14 @@
 
 let items = document.getElementById('items');
 let a;
+let locat = window.location.port;
 
 fetch('http://localhost:3000/api/products')
 .then(res => res.json())
 .then(data => {
     for(let i = 0; i < data.length; i++) {
         a = document.createElement('a');
-        a.setAttribute('href', new URL('http://127.0.0.1:46693//front/html/product.html?id=' + data[i]._id));
+        a.setAttribute('href', new URL('http://127.0.0.1:' + locat + '//front/html/product.html?id=' + data[i]._id));
         items.appendChild(a);
 
         article = document.createElement('article');

@@ -1,3 +1,5 @@
+let locat = window.location.port;
+
 // Creat all the Element for the section in HTML
 function getSectionAndAddIn(id, color, image, alt, name, color, quantity){
     let getSection = document.getElementById('cart__items');
@@ -115,9 +117,12 @@ function getPrice(item, varPrice, quantity) {
         for(let i = 0; i < data.length; i++) {
             if(item == data[i]._id) {
                 varPrice.innerText = data[i].price * quantity;
+                
             }
         }
+    totalPrice()
     })
+    
 }
 
 
@@ -130,6 +135,9 @@ function getArrayStorage() {
     let basket = localStorage.getItem('Cart');
     if(basket != null) {
         return JSON.parse(basket);
+    } else {
+        alert('Votre panier est vide')
+        return false;
     }
 }
 // Create function who show the products in cart page
@@ -142,7 +150,7 @@ function saveCart(basket) {
 function showProduct() {
     let basket = getArrayStorage();
     for(let i = 0; i < basket.length; i++) {
-        getSectionAndAddIn(basket[i].id, basket[i].color, basket[i].img, basket[i].alt, basket[i].name, basket[i].color,/* basket[i].price,*/ basket[i].quantity)
+        getSectionAndAddIn(basket[i].id, basket[i].color, basket[i].img, basket[i].alt, basket[i].name, basket[i].color, basket[i].quantity)
     }
 }
 
@@ -151,14 +159,24 @@ function changeQuantityInStorage() {
     let getInput = document.querySelectorAll('.cart__item__content__settings__quantity input')
     let basket = getArrayStorage();
     for(let j = 0; j < getInput.length; j++) {
+
         getInput[j].addEventListener('change', (e) => {
             let getChangeId = basket[j].id;
             let getChangeColor = basket[j].color;
             let foundProduct = basket.find(p => p.id == getChangeId && p.color == getChangeColor);
-            if(foundProduct != undefined) {
-                foundProduct.quantity = e.target.value;
-                saveCart(basket);
-                location.reload();
+            if(foundProduct != undefined) { 
+                if(e.target.value == 0 || e.target.value == '') {
+                    let change = getChangeId + getChangeColor;
+                    basket = basket.filter(p => p.id + p.color != change);
+                    saveCart(basket);
+                    location.reload();
+                } else if(e.target.value > 100) {
+                    alert('Veuillez choisir une quantité infèrieur à 100')
+                } else {
+                    foundProduct.quantity = e.target.value;
+                    saveCart(basket);
+                    location.reload();
+                } 
             }
         })
     }
@@ -187,19 +205,6 @@ function deleteProduct() {
 
 // Récuperer la totalité des input et faire la somme dans cart__price
 // Et récuperer la valeur du prix, faire la somme et les envoyé dans totalprice
-function QuantityAndPrice() {
-    let sumQuantity = totalQuantity();
-    document
-        .getElementById('totalQuantity')
-        .innerText = sumQuantity;
-    
-    let sumPrice = totalPrice();
-    document
-        .getElementById('totalPrice')
-        .innerText = sumPrice;
-
-}
-
 function totalQuantity() {
     let input = document.querySelectorAll('.itemQuantity');
     let sum = 0;
@@ -207,24 +212,30 @@ function totalQuantity() {
         let parse = parseInt(input[i].value)
         sum += parse
     }
-    return sum;
+    document
+        .getElementById('totalQuantity')
+        .innerText = sum;
 }
 
 function totalPrice() {
     let price = document.querySelectorAll('.cart__item__content__description');
     let sum = 0;
     for(let i = 0; i < price.length; i++) {
-        let parse = parseInt(price[i].lastChild.innerText);
-        sum += parse
+        sum += parseInt(price[i].lastChild.innerText)
     }
-    return sum;
+    document
+        .getElementById('totalPrice')
+        .innerText = sum;
+
 }
 
-if(window.location == 'http://127.0.0.1:46693//front/html/cart.html'){
+
+
+if(window.location == 'http://127.0.0.1:' + locat + '//front/html/cart.html'){
     showProduct()
     changeQuantityInStorage()
     deleteProduct()
-    QuantityAndPrice()
+    totalQuantity()
 
     /***
      * Make an function who get the value of the input and make an object contact with data of form
@@ -330,20 +341,23 @@ if(window.location == 'http://127.0.0.1:46693//front/html/cart.html'){
 
     // Je veux vérifier que tout les champs sont rempli 
     getButton.addEventListener('click', (event) => {
-        event.preventDefault();
         let product = getArrayStorage();
-        let products = []
-        for(let i = 0; i < product.length; i++){
-            products.push(product[i].id)
-        }
-        if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
-            let reg = {
-                contact,
-                products
+        if(product == false) {
+            alert('Votre panier est vide')
+        } else {
+            let products = []
+            for(let i = 0; i < product.length; i++){
+                products.push(product[i].id)
             }
-            fetchPost(reg);
-        }else {
-            alert('Veuillez remplir tous les champs')
+            if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
+                let reg = {
+                    contact,
+                    products
+                }
+                fetchPost(reg);
+            } else {
+                alert('Veuillez remplir tous les champs')
+            }
         }
     })
 
@@ -362,14 +376,18 @@ if(window.location == 'http://127.0.0.1:46693//front/html/cart.html'){
             }
         })
         .then((value) => {
-            window.location.href='http://127.0.0.1:46693//front/html/confirmation.html?id=' + value.orderId;
+            window.location.href='http://127.0.0.1:' + locat + '//front/html/confirmation.html?id=' + value.orderId;
         })
     }
-
 } else {
-    let test = document.querySelector('#orderId');
+    let product = getArrayStorage();
+    let orderId = document.getElementById('orderId');
     let params = new URLSearchParams(window.location.search);
-    test.innerText = params.get('id');
+    orderId.innerText = params.get('id');
     localStorage.clear();
+
+
+
+
 }
 
