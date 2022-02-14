@@ -357,6 +357,7 @@ if(window.location == 'http://127.0.0.1:' + locat + '//front/html/cart.html'){
     getButton.addEventListener('click', (event) => {
         if(basket == false) {
             alert('Votre panier est vide');
+            event.preventDefault();
         } else {
             let products = [];
             for(let i = 0; i < basket.length; i++){
