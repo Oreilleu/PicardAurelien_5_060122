@@ -1,11 +1,13 @@
 let locat = window.location.port;
+let basket = getArrayStorage();
 
-// Creat all the Element for the section in HTML
+// Récupère la section cart__items et y ajoute un article
 function getSectionAndAddIn(id, color, image, alt, name, color, quantity){
     let getSection = document.getElementById('cart__items');
     appendToElement(createArticleWithAtribute(id, color, image, alt, name, color, quantity), getSection);
 }
 
+// Return un article avec la div(image) et la div(contenu)
 function createArticleWithAtribute(id, color, image, alt, name, color, quantity) {
     let article =  document.createElement('article');
     article.setAttribute('class', 'cart__item');
@@ -18,6 +20,7 @@ function createArticleWithAtribute(id, color, image, alt, name, color, quantity)
     return article;
 }
 
+// Return une div(image) avec une image créé
 function createBlocDivImg(image, alt) {
     let divCartItemImg = document.createElement('div');
     divCartItemImg.setAttribute('class', 'cart__item__img');
@@ -30,6 +33,7 @@ function createBlocDivImg(image, alt) {
     return divCartItemImg;
 }
 
+// Return une div(contenu) avec la div(description) et la div(option)
 function createDivContent(name, color, id, quantity) {
     let divCartItemContent = document.createElement('div');
     divCartItemContent.setAttribute('class', 'cart__item__content');
@@ -40,7 +44,7 @@ function createDivContent(name, color, id, quantity) {
     return divCartItemContent;
 }
 
-// Utiliser la quantité * price pour le prix mais réussir a extraire le price
+// Return une div(description) contenant un h2(name), un paragraphe(color) et un paragraphe(price)
 function createBlocDivDescription(name, color, id, quantity) {
     let divCartItemContentDescription = document.createElement('div');
     divCartItemContentDescription.setAttribute('class', 'cart__item__content__description');
@@ -54,14 +58,13 @@ function createBlocDivDescription(name, color, id, quantity) {
     divCartItemContentDescription.appendChild(colorProduct);
 
     let priceProduct = document.createElement('p');
-    // let price = getPrice(id);
-    // priceProduct.innerText = price + ' €';
     getPrice(id, priceProduct, quantity)
     divCartItemContentDescription.appendChild(priceProduct);
 
     return divCartItemContentDescription;
 }
 
+// Return une div(option) contenant la div(quantité) et la div(supprimer)
 function createDivSettings(quantity) {
     let divCartItemContentSettings = document.createElement('div');
     divCartItemContentSettings.setAttribute('class', 'cart__item__content__settings');
@@ -72,6 +75,7 @@ function createDivSettings(quantity) {
     return divCartItemContentSettings;
 }
 
+// Return une div avec un paragraphe(quantité) et son input
 function createBlocDivSettingsQuantity(quantity) {
     let divCartItemContentSettingsQuantity = document.createElement('div');
     divCartItemContentSettingsQuantity.setAttribute('class', 'cart__item__content__settings__quantity');
@@ -92,6 +96,7 @@ function createBlocDivSettingsQuantity(quantity) {
     return divCartItemContentSettingsQuantity;
 }
 
+// Return une div(supprimer) avec le btn supprimer
 function createBlocDivSettingsDelete() {
     let divCartItemContentSettingsDelete = document.createElement('div');
     divCartItemContentSettingsDelete.setAttribute('class', 'cart__item__content__settings__delete');
@@ -104,12 +109,17 @@ function createBlocDivSettingsDelete() {
     return divCartItemContentSettingsDelete;
 }
 
+// Permets d'ajouter un enfant a un élément
 function appendToElement(child, parent) {
     let getFunction = child;
     parent.appendChild(getFunction);
 }
 
-// Faire une function qui retour un prix grace a fetch si l'idItem == idLocalstorage
+/**
+ * Récupère les produits de l'API 
+ * SI l'id du produit de la page vaut l'id du produit de l'API
+ * Inscrit le prix dans une variable(paragraphe(price)) en fonction de la quantité
+ */
 function getPrice(item, varPrice, quantity) {
     fetch('http://localhost:3000/api/products')
     .then(res => res.json())
@@ -117,49 +127,71 @@ function getPrice(item, varPrice, quantity) {
         for(let i = 0; i < data.length; i++) {
             if(item == data[i]._id) {
                 varPrice.innerText = data[i].price * quantity;
-                
             }
         }
-    totalPrice()
+    totalPrice();
+    totalQuantity();
     })
     
 }
 
+// Fait la somme de tous les prix des produits présents sur la page et les inscrit dans la variable prix total
+function totalPrice() {
+    let price = document.querySelectorAll('.cart__item__content__description');
+    let sum = 0;
+    for(let i = 0; i < price.length; i++) {
+        sum += parseInt(price[i].lastChild.innerText)
+    }
+    document
+        .getElementById('totalPrice')
+        .innerText = sum;
+
+}
+
+// Fait la somme de tous les inputs quantité présents sur la page et les inscrit dans la variable quantité total
+function totalQuantity() {
+    let input = document.querySelectorAll('.itemQuantity');
+    let sum = 0;
+    for(let i = 0; i < input.length; i++) {
+        let parse = parseInt(input[i].value)
+        sum += parse
+    }
+    document
+        .getElementById('totalQuantity')
+        .innerText = sum;
+}
 
 /* ---------------------------------------------------------------------------------------------------------------------------------------------- */
 
+// Crée la clé Cart dans le localStorage et y enverra un objet
+function saveCart(basket) {
+    localStorage.setItem('Cart', JSON.stringify(basket));
+}
 
-
-// Create function that get the Array in the storage
+// Return le local storage à la clé Cart
 function getArrayStorage() {
     let basket = localStorage.getItem('Cart');
     if(basket != null) {
         return JSON.parse(basket);
     } else {
-        alert('Votre panier est vide')
         return false;
     }
 }
-// Create function who show the products in cart page
 
-function saveCart(basket) {
-    localStorage.setItem('Cart', JSON.stringify(basket));
-}
-
-// Use LocalStorage for introduce data while the creation of the item
+// Apelle la fonction getSectionAndAddIn() pour ajouter chaque produit contenue dans le local storage sur la page
 function showProduct() {
-    let basket = getArrayStorage();
     for(let i = 0; i < basket.length; i++) {
         getSectionAndAddIn(basket[i].id, basket[i].color, basket[i].img, basket[i].alt, basket[i].name, basket[i].color, basket[i].quantity)
     }
 }
 
-// Change the quantity in the LocalStorage when the Input change on the page
+/**
+ * Récupère les inputs de la page 
+ * Lorsque la valeur d'un input change j'identifie ce dernier pour modifier sa valeur dans le local storage
+ */
 function changeQuantityInStorage() {
     let getInput = document.querySelectorAll('.cart__item__content__settings__quantity input')
-    let basket = getArrayStorage();
     for(let j = 0; j < getInput.length; j++) {
-
         getInput[j].addEventListener('change', (e) => {
             let getChangeId = basket[j].id;
             let getChangeColor = basket[j].color;
@@ -182,77 +214,116 @@ function changeQuantityInStorage() {
     }
 
 }
-/**
- * See with Yazid if reload the page is ok for the price on the cart page 
- * or if i have to make a function who manage this 
-*/
 
-// Make an function who manage delete of the product
+// Supprime un article lorsque le btn supprimer est cliquer
 function deleteProduct() {
     let deleteProduct = document.querySelectorAll('.deleteItem');
-    let bask = getArrayStorage();
     for (let m = 0; m < deleteProduct.length; m++) {
         deleteProduct[m].addEventListener('click', (e) => {
-            let getChangeId = bask[m].id;
-            let getChangeColor = bask[m].color;
+            let getChangeId = basket[m].id;
+            let getChangeColor = basket[m].color;
             let change = getChangeId + getChangeColor;
-            bask = bask.filter(p => p.id + p.color != change);
-            saveCart(bask);
+            basket = basket.filter(p => p.id + p.color != change);
+            saveCart(basket);
             location.reload();
         })
     }
 }
 
-// Récuperer la totalité des input et faire la somme dans cart__price
-// Et récuperer la valeur du prix, faire la somme et les envoyé dans totalprice
-function totalQuantity() {
-    let input = document.querySelectorAll('.itemQuantity');
-    let sum = 0;
-    for(let i = 0; i < input.length; i++) {
-        let parse = parseInt(input[i].value)
-        sum += parse
+/* ---------------------------------------------------------------------------------------------------------------------------------------------- */
+
+// Test via regex pour les prénoms, nom de famille et ville
+function validFirstAndLastNameAndCity(input, e) {
+    let getFirstNameError = document.getElementById('firstNameErrorMsg');
+    let getLastNameError = document.getElementById('lastNameErrorMsg');
+    let getCityError = document.getElementById('cityErrorMsg');
+    let target = e.target;
+    if(/^[A-Za-zàâäéèêëïîôöùûüÿç-]{3,20}$/.test(input.value)){
+        if(target.name == getForm.firstName.name) {
+            getFirstNameError.innerText = 'Prénom valide';
+        } else if (target.name == getForm.lastName.name){
+            getLastNameError.innerText = 'Nom valide';
+        } else if (target.name == getForm.city.name) {
+            getCityError.innerText = 'Ville valide';
+        }
+        return true;
     }
-    document
-        .getElementById('totalQuantity')
-        .innerText = sum;
+    else {
+        if(target.name == getForm.firstName.name) {
+            getFirstNameError.innerText = 'Prénom invalide';
+        } else if (target.name == getForm.lastName.name){
+            getLastNameError.innerText = 'Nom invalide';
+        } else if (target.name == getForm.city.name) {
+            getCityError.innerText = 'Ville invalide';
+        }
+        return false;
+    }
 }
 
-function totalPrice() {
-    let price = document.querySelectorAll('.cart__item__content__description');
-    let sum = 0;
-    for(let i = 0; i < price.length; i++) {
-        sum += parseInt(price[i].lastChild.innerText)
+// Test via regex pour les adresses postales
+function validAddress(input) {
+    if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
+        document
+        .getElementById('addressErrorMsg')
+        .innerText = 'Adresse Valide'
+        return true;
+    } else {
+        document
+        .getElementById('addressErrorMsg')
+        .innerText = 'Adresse au mauvais format veuillez essayer avec ce format : \'00 rue du 8 mai 50258\''
+        return false;
     }
-    document
-        .getElementById('totalPrice')
-        .innerText = sum;
-
 }
 
+// Test via regex pour les email
+function validEmail(input) {
+    if(/^[0-9A-Za-z-.\w]{3,40}[@][A-Za-z0,9-\w]{1,10}.[a-z]{2,10}$/.test(input.value)) {
+        document
+            .getElementById('emailErrorMsg')
+            .innerText = 'Adresse mail valide'
+        return true;
+    } else {
+        document
+            .getElementById('emailErrorMsg')
+            .innerText = 'Adresse mail invalide'
+        return false;
+    }
+}
 
+// Méthod fetch renvoie sur la page de confirmation avec le numéro de commande en id de l'URL si la promesse est résolue
+function fetchPost(data) {
+    fetch('http://localhost:3000/api/products/order', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    })
+    .then((res) => {
+        if(res.ok){
+            return res.json();
+        }
+    })
+    .then((value) => {
+        window.location.href='http://127.0.0.1:' + locat + '//front/html/confirmation.html?id=' + value.orderId;
+    })
+}
+
+let getForm = document.querySelector('.cart__order__form')
+let getButton = document.querySelector('#order')
+let contact = {
+    firstName: this,
+    lastName: this,
+    address: this,
+    city: this,
+    email: this
+}
 
 if(window.location == 'http://127.0.0.1:' + locat + '//front/html/cart.html'){
-    showProduct()
-    changeQuantityInStorage()
-    deleteProduct()
-    totalQuantity()
-
-    /***
-     * Make an function who get the value of the input and make an object contact with data of form
-     * Show an error msg if the input are false
-     * return in an object all the value of the form 
-     */
-
-
-    let getForm = document.querySelector('.cart__order__form')
-    let getButton = document.querySelector('#order')
-    let contact = {
-        firstName: this,
-        lastName: this,
-        address: this,
-        city: this,
-        email: this
-    }
+    showProduct();
+    changeQuantityInStorage();
+    deleteProduct();
 
     getForm.firstName.addEventListener('change', (e) => {
         if(validFirstAndLastNameAndCity(getForm.firstName, e)){
@@ -282,112 +353,42 @@ if(window.location == 'http://127.0.0.1:' + locat + '//front/html/cart.html'){
             return contact.email = e.target.value;
         }
     })
-
-    function validFirstAndLastNameAndCity(input, e) {
-        let getFirstNameError = document.getElementById('firstNameErrorMsg');
-        let getLastNameError = document.getElementById('lastNameErrorMsg');
-        let getCityError = document.getElementById('cityErrorMsg');
-        let target = e.target;
-        if(/^[A-Za-zàâäéèêëïîôöùûüÿç-]{3,20}$/.test(input.value)){
-            if(target.name == getForm.firstName.name) {
-                getFirstNameError.innerText = 'Prénom valide';
-            } else if (target.name == getForm.lastName.name){
-                getLastNameError.innerText = 'Nom valide';
-            } else if (target.name == getForm.city.name) {
-                getCityError.innerText = 'Ville valide';
-            }
-            return true;
-        }
-        else {
-            if(target.name == getForm.firstName.name) {
-                getFirstNameError.innerText = 'Prénom invalide';
-            } else if (target.name == getForm.lastName.name){
-                getLastNameError.innerText = 'Nom invalide';
-            } else if (target.name == getForm.city.name) {
-                getCityError.innerText = 'Ville invalide';
-            }
-            return false;
-        }
-    }
-
-    function validAddress(input) {
-        if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
-            document
-            .getElementById('addressErrorMsg')
-            .innerText = 'Adresse Valide'
-            return true;
-        } else {
-            document
-            .getElementById('addressErrorMsg')
-            .innerText = 'Adresse au mauvais format veuillez essayer avec ce format : \'00 rue du 8 mai 50258\''
-            return false;
-        }
-    }
-
-    function validEmail(input) {
-        if(/^[0-9A-Za-z-.\w]{3,40}[@][A-Za-z0,9-\w]{1,10}.[a-z]{2,10}$/.test(input.value)) {
-            document
-                .getElementById('emailErrorMsg')
-                .innerText = 'Adresse mail valide'
-            return true;
-        } else {
-            document
-                .getElementById('emailErrorMsg')
-                .innerText = 'Adresse mail invalide'
-            return false;
-        }
-    }
-
-
-    // Je veux vérifier que tout les champs sont rempli 
+    
     getButton.addEventListener('click', (event) => {
-        let product = getArrayStorage();
-        if(product == false) {
-            alert('Votre panier est vide')
+        if(basket == false) {
+            alert('Votre panier est vide');
         } else {
-            let products = []
-            for(let i = 0; i < product.length; i++){
-                products.push(product[i].id)
+            let products = [];
+            for(let i = 0; i < basket.length; i++){
+                products.push(basket[i].id);
             }
             if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
-                let reg = {
+                let promise = {
                     contact,
                     products
                 }
-                fetchPost(reg);
+                fetchPost(promise);
             } else {
-                alert('Veuillez remplir tous les champs')
+                alert('Veuillez remplir tous les champs');
+                event.preventDefault();
             }
         }
     })
 
-    function fetchPost(data) {
-        fetch('http://localhost:3000/api/products/order', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        })
-        .then((res) => {
-            if(res.ok){
-                return res.json();
-            }
-        })
-        .then((value) => {
-            window.location.href='http://127.0.0.1:' + locat + '//front/html/confirmation.html?id=' + value.orderId;
-        })
-    }
 } else {
-    let product = getArrayStorage();
-    let orderId = document.getElementById('orderId');
-    let params = new URLSearchParams(window.location.search);
-    orderId.innerText = params.get('id');
-    localStorage.clear();
-
-
-
-
+    if(basket != false) {
+        let orderId = document.getElementById('orderId');
+        let params = new URLSearchParams(window.location.search);
+        orderId.innerText = params.get('id');
+        localStorage.clear();
+    } else {
+        if(confirm('Attention si vous cliquez sur OK vous serez redirigez vers la page d\'acceuil.\nPensez à noter votre numéro de commande')) {
+            window.location.href='http://127.0.0.1:' + locat + '//front/html/index.html';
+        } else {
+            let orderId = document.getElementById('orderId');
+            let params = new URLSearchParams(window.location.search);
+            orderId.innerText = params.get('id');
+        }
+    }
 }
 

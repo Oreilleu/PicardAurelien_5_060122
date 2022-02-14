@@ -1,15 +1,15 @@
-/*
- * Requete qui récupère les datas de l'API 
- * Créer les items 
- * Met les data dans les items si la page correspond a l'id de l'item
-*/
-
 let idItem, colorItem, nbItem, imgItem, nameItem, priceItem, altItem;
 let cart = {};
 let params = new URLSearchParams(window.location.search);
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
 
+
+/**
+ * La fonction récupère les produits de l'api
+ * Elle les parcourt via la boucle for
+ * Puis elle crée le produit sur la page SI l'id de l'URL vaut un des id des produits
+ */
 function AddItemWithDataToProducts() {
     fetch('http://localhost:3000/api/products')
     .then(res => res.json())
@@ -43,9 +43,10 @@ function AddItemWithDataToProducts() {
 
 
 /*
- *
+ * La fonction compare les produits de l'API à l'id passer dans l'URL
+ * Lorsque le résultat est true, elle récupère le tableau de couleur correspondant
+ * Puis crée les options avec les couleurs en valeur  
 */
-
 function AddOptionSelect() {
     fetch('http://localhost:3000/api/products')
     .then(res => res.json())
@@ -70,12 +71,10 @@ function AddOptionSelect() {
 
 
 /* 
- * Stocker l'id, la couleur et le nombre de kanap dans un array
- * Faire un événement qui récupère la couleur et le nombre de kanp dans variable colorItem et nbItem
- * Faire une validation des données saisies
+ * La fonction récupère la valeur de la couleur et de la quantité choisie
+ * Puis elle constitue l'objet cart avec les valeurs recupèré dans AddItemWithDataToProducts() et AddOptionSelect()
+ * Après un test elle return l'object
 */
-
-
 function ClickOnCart() {
     color.addEventListener('change', function(e) {
         colorItem = e.target.value
@@ -101,19 +100,19 @@ function ClickOnCart() {
                 quantity: nbItem,
                 img: imgItem,
                 name: nameItem,
-                // price: priceItem,
                 alt: altItem
             }
             return addCart(cart)
         }
-        // console.log(cart)
     });
 }
 
+// Crée la clé Cart dans le localStorage et y enverra un objet
 function saveCart(basket) {
     localStorage.setItem('Cart', JSON.stringify(basket));
 }
 
+// Récupère les valeurs de la clé Cart et return un tableau vide s'il n'existe pas
 function getCart() {
     let basket = localStorage.getItem('Cart');
     if (basket == null) {
@@ -123,6 +122,10 @@ function getCart() {
     }
 }
 
+/**
+ * Recherche dans le localStorage si le produit(id et color) existe
+ * S'il existe on l'incrémente sinon on l'ajoute
+ */
 function addCart(product) {
     let basket = getCart();
     let foundProduct = basket.find(p => p.id == product.id && p.color == product.color);
@@ -139,6 +142,7 @@ function addCart(product) {
     saveCart(basket);
 }
 
+// Trie le localstorage par rapport à l'id des produits
 function sortBasket(basket) {
     basket.sort((a,b) => {
         if(a.id < b.id) {return -1;}
@@ -150,6 +154,3 @@ function sortBasket(basket) {
 AddItemWithDataToProducts()
 AddOptionSelect()
 ClickOnCart()
-
-
-

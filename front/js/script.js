@@ -1,14 +1,13 @@
-/*
- *
-*/
-
-// Voir avec Yazid pour le port qui change a chaque deconnection
-// Fonction à découper ?
-
 let items = document.getElementById('items');
 let a;
 let locat = window.location.port;
 
+
+/**
+ * Utilisation de la méthode fetch pour récupérer les produits de l'API
+ * La boucle for va créer les produits présents dans l'API
+ * Pour chaque création d'un produit, on attribue dans l'id de l'URL l'id du produit lorsque le produit est cliqué
+ */
 fetch('http://localhost:3000/api/products')
 .then(res => res.json())
 .then(data => {
