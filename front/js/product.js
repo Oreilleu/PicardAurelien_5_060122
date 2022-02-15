@@ -6,8 +6,8 @@ let color = document.getElementById('colors');
 
 
 /**
- * La fonction récupère les produits de l'api
- * Elle les parcourt via la boucle for
+ * Récupère les produits de l'api
+ * Les parcourt via la boucle for
  * Puis elle crée le produit sur la page SI l'id de l'URL vaut un des id des produits
  */
 function AddItemWithDataToProducts() {
@@ -43,7 +43,7 @@ function AddItemWithDataToProducts() {
 
 
 /*
- * La fonction compare les produits de l'API à l'id passer dans l'URL
+ * Compare les produits de l'API à l'id passer dans l'URL
  * Lorsque le résultat est true, elle récupère le tableau de couleur correspondant
  * Puis crée les options avec les couleurs en valeur  
 */
@@ -71,7 +71,7 @@ function AddOptionSelect() {
 
 
 /* 
- * La fonction récupère la valeur de la couleur et de la quantité choisie
+ * Récupère la valeur de la couleur et de la quantité choisie
  * Puis elle constitue l'objet cart avec les valeurs recupèré dans AddItemWithDataToProducts() et AddOptionSelect()
  * Après un test elle return l'object
 */
@@ -90,9 +90,9 @@ function ClickOnCart() {
         if(nbItem == 0 || nbItem == null) {
             alert('Veuillez choisir une quantité');
         } else if (nbItem > 100) {
-            alert('Veuillez choisir une quantité infèrieur à 100');
+            alert('Veuillez choisir une quantité inférieure à 100');
         } else if (colorItem == null || colorItem == "") {
-            alert('Veuillez choisir couleur');
+            alert('Veuillez choisir une couleur');
         } else {
             let cart = {
                 id: idItem,
@@ -102,7 +102,8 @@ function ClickOnCart() {
                 name: nameItem,
                 alt: altItem
             }
-            return addCart(cart)
+            alert('Votre produit a été ajouter au panier');
+            return addCart(cart);
         }
     });
 }
@@ -151,6 +152,6 @@ function sortBasket(basket) {
     })
 }
 
-AddItemWithDataToProducts()
-AddOptionSelect()
-ClickOnCart()
+AddItemWithDataToProducts();
+AddOptionSelect();
+ClickOnCart();

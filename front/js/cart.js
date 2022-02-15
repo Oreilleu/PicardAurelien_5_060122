@@ -203,7 +203,7 @@ function changeQuantityInStorage() {
                     saveCart(basket);
                     location.reload();
                 } else if(e.target.value > 100) {
-                    alert('Veuillez choisir une quantité infèrieur à 100')
+                    alert('Veuillez choisir une quantité inférieure à 100')
                 } else {
                     foundProduct.quantity = e.target.value;
                     saveCart(basket);
@@ -265,7 +265,7 @@ function validAddress(input) {
     if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
         document
         .getElementById('addressErrorMsg')
-        .innerText = 'Adresse Valide'
+        .innerText = 'Adresse valide'
         return true;
     } else {
         document
@@ -380,15 +380,15 @@ if(window.location == 'http://127.0.0.1:' + locat + '//front/html/cart.html'){
     if(basket != false) {
         let orderId = document.getElementById('orderId');
         let params = new URLSearchParams(window.location.search);
-        orderId.innerText = params.get('id');
+        orderId.innerText = params.get('id') + '\nMerci pour votre commande !!';
         localStorage.clear();
     } else {
-        if(confirm('Attention si vous cliquez sur OK vous serez redirigez vers la page d\'acceuil.\nPensez à noter votre numéro de commande')) {
+        if(confirm('Attention si vous cliquez sur OK vous serez redirigé vers la page d\'accueil.\nPensez à noter votre numéro de commande')) {
             window.location.href='http://127.0.0.1:' + locat + '//front/html/index.html';
         } else {
             let orderId = document.getElementById('orderId');
             let params = new URLSearchParams(window.location.search);
-            orderId.innerText = params.get('id');
+            orderId.innerText = params.get('id') + '\nMerci pour votre commande !!';
         }
     }
 }
