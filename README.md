@@ -2,10 +2,10 @@ Projet 5 de la formation développeur web d'Openclassrooms : Construisez un site
 
 Compétences évaluées :
 
-Interagir avec un web service avec JavaScript
-Gérer des événements JavaScript
-Valider des données issues de sources externes
-Créer un plan de test pour une application
+- Interagir avec un web service avec JavaScript
+- Gérer des événements JavaScript
+- Valider des données issues de sources externes
+- Créer un plan de test pour une application
 
 Scénario :
 
