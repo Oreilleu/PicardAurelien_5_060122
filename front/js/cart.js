@@ -262,7 +262,7 @@ function validFirstAndLastNameAndCity(input, e) {
 
 // Test via regex pour les adresses postales
 function validAddress(input) {
-    if(/^[0-9]{2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
+    if(/^[0-9]{1,2}\s[0-9A-Za-zàâäéèêëïîôöùûüÿç-\s]{3,50}\s[0-9]{5}$/.test(input.value)){
         document
         .getElementById('addressErrorMsg')
         .innerText = 'Adresse valide'
