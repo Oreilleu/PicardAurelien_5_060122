@@ -1,5 +1,10 @@
 let locat = window.location.port;
+let params = new URLSearchParams(window.location.search);
 let basket = getArrayStorage();
+let getForm = document.querySelector('.cart__order__form');
+let getButton = document.querySelector('#order');
+let orderId = document.getElementById('orderId');
+
 
 // Récupère la section cart__items et y ajoute un article
 function getSectionAndAddIn(id, color, image, alt, name, color, quantity){
@@ -290,6 +295,47 @@ function validEmail(input) {
     }
 }
 
+// Créé l'objet contact au changement de chaque input 
+function createContact() {
+    let contacts = {
+        firstName: this,
+        lastName: this,
+        address: this,
+        city: this,
+        email: this
+    }
+    getForm.firstName.addEventListener('change', (e) => {
+        if(validFirstAndLastNameAndCity(getForm.firstName, e)){
+            return contacts.firstName = e.target.value;
+        }
+    });
+    getForm.lastName.addEventListener('change', (e) => {
+        if(validFirstAndLastNameAndCity(getForm.lastName, e)){
+            return contacts.lastName = e.target.value;
+        }
+    })
+        
+    getForm.city.addEventListener('change', (e) => {
+        if(validFirstAndLastNameAndCity(getForm.city, e)){
+            return contacts.city = e.target.value;
+        }
+    })
+        
+    getForm.address.addEventListener('change', (e) => {
+        if(validAddress(getForm.address)){
+            return contacts.address = e.target.value;
+        }
+    })
+        
+    getForm.email.addEventListener('change', (e) => {
+        if(validEmail(getForm.email)){
+            return contacts.email = e.target.value;
+        }
+    })
+
+    return contacts;
+}
+
 // Méthod fetch renvoie sur la page de confirmation avec le numéro de commande en id de l'URL si la promesse est résolue
 function fetchPost(data) {
     fetch('http://localhost:3000/api/products/order', {
@@ -310,86 +356,39 @@ function fetchPost(data) {
     })
 }
 
-let getForm = document.querySelector('.cart__order__form')
-let getButton = document.querySelector('#order')
-let contact = {
-    firstName: this,
-    lastName: this,
-    address: this,
-    city: this,
-    email: this
+// Au clique sur le bouton commandé on crée l'objet à envoyer au serveur et on l'envoie puis on vide le local storage
+function clickOnButton() {
+    let contact = createContact();
+    let products = [];
+    for(let i = 0; i < basket.length; i++){
+        products.push(basket[i].id);
+    }
+
+    getButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        if(basket == false) {
+            alert('Votre panier est vide');
+        } else if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event) && basket != false) {
+            let promise = {
+                contact,
+                products
+            }
+            fetchPost(promise);
+            localStorage.clear();
+        } else {
+            alert('Veuillez remplir tous les champs');
+        }
+    })
 }
 
 if(window.location == 'http://127.0.0.1:' + locat + '//front/html/cart.html'){
     showProduct();
     changeQuantityInStorage();
     deleteProduct();
-
-    getForm.firstName.addEventListener('change', (e) => {
-        if(validFirstAndLastNameAndCity(getForm.firstName, e)){
-            return contact.firstName = e.target.value;
-        }
-    });
-    getForm.lastName.addEventListener('change', (e) => {
-        if(validFirstAndLastNameAndCity(getForm.lastName, e)){
-            return contact.lastName = e.target.value;
-        }
-    })
-        
-    getForm.city.addEventListener('change', (e) => {
-        if(validFirstAndLastNameAndCity(getForm.city, e)){
-            return contact.city = e.target.value;
-        }
-    })
-        
-    getForm.address.addEventListener('change', (e) => {
-        if(validAddress(getForm.address)){
-            return contact.address = e.target.value;
-        }
-    })
-        
-    getForm.email.addEventListener('change', (e) => {
-        if(validEmail(getForm.email)){
-            return contact.email = e.target.value;
-        }
-    })
-    
-    getButton.addEventListener('click', (event) => {
-        if(basket == false) {
-            alert('Votre panier est vide');
-            event.preventDefault();
-        } else {
-            let products = [];
-            for(let i = 0; i < basket.length; i++){
-                products.push(basket[i].id);
-            }
-            if(validEmail(getForm.email) && validAddress(getForm.address) && validFirstAndLastNameAndCity(getForm.city, event) && validFirstAndLastNameAndCity(getForm.lastName, event) && validFirstAndLastNameAndCity(getForm.firstName, event)){
-                let promise = {
-                    contact,
-                    products
-                }
-                fetchPost(promise);
-            } else {
-                alert('Veuillez remplir tous les champs');
-                event.preventDefault();
-            }
-        }
-    })
-
-} else {
-    if(basket != false) {
-        let orderId = document.getElementById('orderId');
-        let params = new URLSearchParams(window.location.search);
-        orderId.innerText = params.get('id') + '\nMerci pour votre commande !!';
-        localStorage.clear();
-    } else {
-        if(confirm('Attention si vous cliquez sur OK vous serez redirigé vers la page d\'accueil.\nPensez à noter votre numéro de commande')) {
-            window.location.href='http://127.0.0.1:' + locat + '//front/html/index.html';
-        } else {
-            let orderId = document.getElementById('orderId');
-            let params = new URLSearchParams(window.location.search);
-            orderId.innerText = params.get('id') + '\nMerci pour votre commande !!';
-        }
-    }
+    clickOnButton();
 }
+else {
+    orderId.innerText = params.get('id') + "\nMerci pour votre commande ! ";
+}
+
 
