@@ -34,4 +34,4 @@ fetch('http://localhost:3000/api/products')
         article.appendChild(p);
         p.innerText = data[i].description;
     }
-});
+})

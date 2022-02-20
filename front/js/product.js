@@ -1,6 +1,7 @@
 let idItem, colorItem, nbItem, imgItem, nameItem, priceItem, altItem;
 let cart = {};
 let params = new URLSearchParams(window.location.search);
+let locat = window.location.port;
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
 
@@ -39,6 +40,10 @@ function AddItemWithDataToProducts() {
             }
         }
     })
+    .catch((err) => {
+        alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+        window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+    })
 }
 
 
@@ -64,8 +69,16 @@ function AddOptionSelect() {
                             color.appendChild(createOption);
                     }
                 })
+                .catch((err) => {
+                    alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+                    window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+                })
             }
         }
+    })
+    .catch((err) => {
+        alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+        window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
     })
 }
 
@@ -135,7 +148,6 @@ function addCart(product) {
                 product.quantity = 0;
             }
             foundProduct.quantity = parseInt(foundProduct.quantity) + parseInt(product.quantity)
-            
         } else {
             basket.push(product);
         }

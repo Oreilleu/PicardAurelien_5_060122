@@ -354,6 +354,10 @@ function fetchPost(data) {
     .then((value) => {
         window.location.href='http://127.0.0.1:' + locat + '//front/html/confirmation.html?id=' + value.orderId;
     })
+    .catch((err) => {
+        alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+        window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+    })
 }
 
 // Au clique sur le bouton commandé on crée l'objet à envoyer au serveur et on l'envoie puis on vide le local storage
