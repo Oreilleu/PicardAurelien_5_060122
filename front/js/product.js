@@ -11,6 +11,8 @@ let color = document.getElementById('colors');
  * Les parcourt via la boucle for
  * Puis elle crée le produit sur la page SI l'id de l'URL vaut un des id des produits
  */
+
+
 function AddItemWithDataToProducts() {
     fetch('http://localhost:3000/api/products')
     .then(res => res.json())
@@ -68,10 +70,6 @@ function AddOptionSelect() {
                             createOption.innerText = data.colors[w];
                             color.appendChild(createOption);
                     }
-                })
-                .catch((err) => {
-                    alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
-                    window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
                 })
             }
         }
@@ -164,6 +162,11 @@ function sortBasket(basket) {
     })
 }
 
-AddItemWithDataToProducts();
-AddOptionSelect();
-ClickOnCart();
+if(params.get('id').length !== 32) {
+    alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+    window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+} else {
+    AddItemWithDataToProducts();
+    AddOptionSelect();
+    ClickOnCart();
+}
