@@ -5,15 +5,32 @@ let locat = window.location.port;
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
 
+function secureUrl() {
+    let arrayTest = [];
+    fetch('http://localhost:3000/api/products')
+    .then(res => res.json())
+    .then(data => {
+        for(let i = 0; i < data.length; i++){
+            arrayTest.push(data[i]._id)
+        }
+        
+        let foundId = arrayTest.find(id => id == params.get('id'))
+        if(foundId == undefined) {
+            alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+            window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+        }
+    })
+    .catch(err => ({err}));
+};
+
 
 /**
  * Récupère les produits de l'api
  * Les parcourt via la boucle for
  * Puis elle crée le produit sur la page SI l'id de l'URL vaut un des id des produits
  */
-
-
 function AddItemWithDataToProducts() {
+    secureUrl();
     fetch('http://localhost:3000/api/products')
     .then(res => res.json())
     .then(data => {
@@ -162,11 +179,15 @@ function sortBasket(basket) {
     })
 }
 
-if(params.get('id').length !== 32) {
-    alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
-    window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
-} else {
-    AddItemWithDataToProducts();
-    AddOptionSelect();
-    ClickOnCart();
-}
+AddItemWithDataToProducts();
+AddOptionSelect();
+ClickOnCart();
+
+// if(params.get('id').length !== 32) {
+//     alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
+//     window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+// } else {
+//     AddItemWithDataToProducts();
+//     AddOptionSelect();
+//     ClickOnCart();
+// }
