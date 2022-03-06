@@ -5,6 +5,7 @@ let locat = window.location.port;
 let itemImage = document.querySelector('div.item__img');
 let color = document.getElementById('colors');
 
+// Vérifie si l'id URL est bien valide
 function secureUrl() {
     let arrayTest = [];
     fetch('http://localhost:3000/api/products')
@@ -13,7 +14,7 @@ function secureUrl() {
         for(let i = 0; i < data.length; i++){
             arrayTest.push(data[i]._id)
         }
-        
+
         let foundId = arrayTest.find(id => id == params.get('id'))
         if(foundId == undefined) {
             alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
@@ -22,7 +23,6 @@ function secureUrl() {
     })
     .catch(err => ({err}));
 };
-
 
 /**
  * Récupère les produits de l'api
