@@ -182,12 +182,3 @@ function sortBasket(basket) {
 AddItemWithDataToProducts();
 AddOptionSelect();
 ClickOnCart();
-
-// if(params.get('id').length !== 32) {
-//     alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
-//     window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
-// } else {
-//     AddItemWithDataToProducts();
-//     AddOptionSelect();
-//     ClickOnCart();
-// }
