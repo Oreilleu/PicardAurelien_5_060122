@@ -1,3 +1,7 @@
+Pour lancer le serveur back : 
+Vous avez besoin de node et npm installé localement sur votre machine.
+Dans le dossier back lancer la commande 'npm install' puis vous pouvez lancer le serveur avec node serveur
+
 Projet 5 de la formation développeur web d'Openclassrooms : Construisez un site e-commerce en JavaScript
 
 Compétences évaluées :
