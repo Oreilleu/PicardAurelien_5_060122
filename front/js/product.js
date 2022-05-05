@@ -18,7 +18,7 @@ function secureUrl() {
         let foundId = arrayTest.find(id => id == params.get('id'))
         if(foundId == undefined) {
             alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
-            window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+            window.location.href = 'http://127.0.0.1:' + locat + '//index.html'
         }
     })
     .catch(err => ({err}));
@@ -61,7 +61,7 @@ function AddItemWithDataToProducts() {
     })
     .catch((err) => {
         alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
-        window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+        window.location.href = 'http://127.0.0.1:' + locat + '//index.html'
     })
 }
 
@@ -93,7 +93,7 @@ function AddOptionSelect() {
     })
     .catch((err) => {
         alert('Un problème est survenue nous allons vous rediriger sur la page d\'acceuil');
-        window.location.href = 'http://127.0.0.1:' + locat + '//front/html/index.html'
+        window.location.href = 'http://127.0.0.1:' + locat + '//index.html'
     })
 }
 
